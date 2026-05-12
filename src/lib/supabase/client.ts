@@ -1,11 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
-import { getPublicEnv } from "@/lib/env";
+import { getSupabasePublicEnv } from "@/lib/env";
 
 export function createBrowserSupabase() {
-  const { supabaseUrl, supabaseAnonKey } = getPublicEnv();
+  const { supabaseUrl, supabaseAnonKey } = getSupabasePublicEnv();
   return createClient(supabaseUrl, supabaseAnonKey, {
     auth: { persistSession: false },
   });
 }
-

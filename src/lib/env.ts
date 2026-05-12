@@ -6,11 +6,14 @@ export function requireEnv(name: string): string {
   return value;
 }
 
-export function getPublicEnv() {
+export function getDomain() {
+  return process.env.NEXT_PUBLIC_DOMAIN || "kioskk.me";
+}
+
+export function getSupabasePublicEnv() {
   return {
     supabaseUrl: requireEnv("NEXT_PUBLIC_SUPABASE_URL"),
     supabaseAnonKey: requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY"),
-    domain: process.env.NEXT_PUBLIC_DOMAIN || "kioskk.me",
   };
 }
 
@@ -22,4 +25,3 @@ export function getServerEnv() {
     jwtSecret: requireEnv("JWT_SECRET"),
   };
 }
-
