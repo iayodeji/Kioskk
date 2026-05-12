@@ -1,0 +1,311 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  .r{font-family:'Inter',sans-serif;background:#FAFAF8;color:#1a1a18;min-height:100vh;}
+
+  /* NAV */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 48px;border-bottom:0.5px solid rgba(0,0,0,0.07);}
+  .logo{display:flex;align-items:center;gap:10px;}
+  .lm{width:30px;height:30px;background:#1a1a18;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#FAFAF8;font-size:11px;font-weight:600;}
+  .lt{font-size:14px;font-weight:500;letter-spacing:-0.2px;}
+  .nav-pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;color:#5F5E5A;background:#EEECEA;border:0.5px solid rgba(0,0,0,0.08);padding:5px 12px;border-radius:100px;}
+  .dot-green{width:6px;height:6px;border-radius:50%;background:#4CAF50;}
+
+  /* LAYOUT */
+  .layout{display:grid;grid-template-columns:1fr 380px;min-height:calc(100vh - 57px);}
+
+  /* LEFT: FORM */
+  .form-col{padding:48px 56px;border-right:0.5px solid rgba(0,0,0,0.07);overflow-y:auto;}
+  .form-header{margin-bottom:48px;}
+  .step-label{font-size:10px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:#B4B2A9;margin-bottom:12px;}
+  .form-h1{font-size:28px;font-weight:300;letter-spacing:-1px;line-height:1.2;margin-bottom:8px;}
+  .form-h1 strong{font-weight:500;}
+  .form-sub{font-size:13px;color:#888780;line-height:1.6;}
+
+  /* PROGRESS */
+  .progress-wrap{display:flex;align-items:center;gap:0;margin-bottom:48px;}
+  .prog-step{display:flex;align-items:center;gap:8px;cursor:pointer;}
+  .prog-num{width:24px;height:24px;border-radius:50%;border:0.5px solid rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#B4B2A9;transition:all 0.2s;}
+  .prog-num.done{background:#1a1a18;border-color:#1a1a18;color:#FAFAF8;}
+  .prog-num.active{background:#1a1a18;border-color:#1a1a18;color:#FAFAF8;box-shadow:0 0 0 3px rgba(26,26,24,0.1);}
+  .prog-text{font-size:12px;color:#B4B2A9;font-weight:400;letter-spacing:-0.1px;}
+  .prog-text.active{color:#1a1a18;font-weight:500;}
+  .prog-line{flex:1;height:0.5px;background:rgba(0,0,0,0.1);margin:0 10px;}
+  .prog-line.done{background:#1a1a18;}
+
+  /* SECTIONS */
+  .fsection{margin-bottom:40px;}
+  .fsection-header{display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:16px;border-bottom:0.5px solid rgba(0,0,0,0.07);}
+  .fsec-icon{width:32px;height:32px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center;color:#1a1a18;font-size:15px;}
+  .fsec-label{font-size:14px;font-weight:500;letter-spacing:-0.2px;}
+  .fsec-sub{font-size:12px;color:#888780;margin-left:auto;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;}
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+  .label{font-size:10px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#B4B2A9;}
+  .input{width:100%;height:42px;background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:9px;padding:0 14px;font-size:14px;font-family:'Inter',sans-serif;color:#1a1a18;outline:none;transition:border-color 0.15s;}
+  .input:focus{border-color:rgba(0,0,0,0.4);}
+  .input.filled{border-color:rgba(0,0,0,0.2);}
+  .input-hint{font-size:11px;color:#B4B2A9;margin-top:3px;}
+  select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23888780' stroke-width='1.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;}
+
+  /* PRODUCT ROWS */
+  .product-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .product-row .input{flex:1;}
+  .price-input{width:110px!important;flex:none!important;}
+  .remove-btn{width:34px;height:34px;border:0.5px solid rgba(0,0,0,0.1);border-radius:7px;background:none;cursor:pointer;color:#B4B2A9;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;line-height:1;}
+  .add-product-btn{width:100%;height:40px;border:0.5px dashed rgba(0,0,0,0.15);border-radius:9px;background:none;font-size:12px;font-weight:500;color:#888780;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;margin-top:4px;}
+
+  /* PIN */
+  .pin-row{display:flex;gap:10px;}
+  .pin-digit{width:44px;height:52px;border:0.5px solid rgba(0,0,0,0.12);border-radius:9px;background:#fff;text-align:center;font-size:20px;font-family:'Inter',sans-serif;font-weight:300;color:#1a1a18;outline:none;}
+  .pin-digit:focus{border-color:rgba(0,0,0,0.4);}
+
+  /* SUBMIT */
+  .submit-area{margin-top:40px;}
+  .submit-btn{width:100%;height:52px;background:#1a1a18;color:#FAFAF8;border:none;border-radius:11px;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-0.2px;}
+  .submit-meta{text-align:center;margin-top:12px;font-size:11px;color:#B4B2A9;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .ai-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:500;color:#888780;background:#EEECEA;padding:3px 8px;border-radius:100px;}
+
+  /* RIGHT: PREVIEW */
+  .preview-col{background:#F2F0EC;padding:32px 28px;display:flex;flex-direction:column;}
+  .preview-label{font-size:10px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:#B4B2A9;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+  .preview-label::after{content:'';flex:1;height:0.5px;background:rgba(0,0,0,0.1);}
+
+  .phone-frame{background:#fff;border-radius:20px;border:0.5px solid rgba(0,0,0,0.1);overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.08);}
+  .phone-header{background:#1a1a18;padding:16px 18px 14px;display:flex;align-items:center;gap:10px;}
+  .phone-logo{width:28px;height:28px;border-radius:7px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#1a1a18;}
+  .phone-biz{flex:1;}
+  .phone-biz-name{font-size:13px;font-weight:500;color:#fff;letter-spacing:-0.2px;}
+  .phone-biz-cat{font-size:10px;color:rgba(255,255,255,0.45);letter-spacing:0.3px;}
+  .phone-wa{width:30px;height:30px;background:rgba(255,255,255,0.1);border-radius:7px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.6);font-size:14px;}
+  .phone-body{padding:16px 14px;}
+  .phone-section-t{font-size:9px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#B4B2A9;margin-bottom:10px;}
+  .phone-product{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:0.5px solid rgba(0,0,0,0.08);border-radius:8px;margin-bottom:6px;background:#FAFAF8;}
+  .phone-prod-name{font-size:12px;font-weight:500;color:#1a1a18;}
+  .phone-prod-price{font-size:12px;color:#1a1a18;font-weight:400;}
+  .phone-order-btn{width:100%;height:36px;background:#1a1a18;color:#FAFAF8;border:none;border-radius:8px;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;margin-top:12px;cursor:pointer;}
+  .phone-link{text-align:center;margin-top:12px;font-size:10px;color:#B4B2A9;font-family:'SF Mono','Fira Code',monospace;}
+
+  .preview-info{margin-top:20px;}
+  .pinfo-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);}
+  .pinfo-row:last-child{border:none;}
+  .pinfo-key{font-size:11px;color:#B4B2A9;letter-spacing:0.2px;}
+  .pinfo-val{font-size:12px;font-weight:500;color:#1a1a18;letter-spacing:-0.1px;}
+  .pinfo-val.muted{color:#B4B2A9;font-weight:400;}
+
+  .error-banner{background:#FFF0EE;border:0.5px solid rgba(200,50,30,0.15);border-radius:9px;padding:12px 14px;margin-top:16px;font-size:12px;color:#C8321E;display:flex;align-items:center;gap:8px;}
+</style>
+
+<div class="r">
+  <nav class="nav">
+    <div class="logo">
+      <div class="lm">KK</div>
+      <span class="lt">kioskk.me</span>
+    </div>
+    <div class="nav-pill">
+      <div class="dot-green"></div>
+      AI-powered storefront
+    </div>
+  </nav>
+
+  <div class="layout">
+    <!-- FORM COLUMN -->
+    <div class="form-col">
+      <div class="form-header">
+        <div class="step-label">New storefront</div>
+        <h1 class="form-h1">Tell us about your<br><strong>business.</strong></h1>
+        <p class="form-sub">We'll use this to build your store. Takes under 60 seconds.</p>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="progress-wrap">
+        <div class="prog-step">
+          <div class="prog-num active">1</div>
+          <span class="prog-text active">Business</span>
+        </div>
+        <div class="prog-line done"></div>
+        <div class="prog-step">
+          <div class="prog-num active">2</div>
+          <span class="prog-text active">Products</span>
+        </div>
+        <div class="prog-line"></div>
+        <div class="prog-step">
+          <div class="prog-num">3</div>
+          <span class="prog-text">Dashboard</span>
+        </div>
+      </div>
+
+      <!-- SECTION 1: BUSINESS INFO -->
+      <div class="fsection">
+        <div class="fsection-header">
+          <div class="fsec-icon">🏪</div>
+          <span class="fsec-label">Business info</span>
+          <span class="fsec-sub">Step 1 of 3</span>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <div class="label">Business name</div>
+            <input class="input filled" type="text" value="Olam's Enterprise" />
+          </div>
+          <div class="field">
+            <div class="label">Owner name</div>
+            <input class="input filled" type="text" value="Ola" />
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <div class="label">WhatsApp number</div>
+            <input class="input filled" type="text" value="08167906554" />
+            <div class="input-hint">Customers place orders via this number</div>
+          </div>
+          <div class="field">
+            <div class="label">Category</div>
+            <select class="input filled">
+              <option>Food & Snacks</option>
+              <option>Fashion & Clothing</option>
+              <option>Electronics</option>
+              <option>Beauty & Skincare</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid3">
+          <div class="field">
+            <div class="label">Location / campus</div>
+            <input class="input filled" type="text" value="UI" />
+          </div>
+          <div class="field">
+            <div class="label">Currency code</div>
+            <input class="input filled" type="text" value="NGN" />
+          </div>
+          <div class="field">
+            <div class="label">Symbol</div>
+            <input class="input filled" type="text" value="₦" />
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: PRODUCTS -->
+      <div class="fsection">
+        <div class="fsection-header">
+          <div class="fsec-icon">📦</div>
+          <span class="fsec-label">Your products</span>
+          <span class="fsec-sub">Step 2 of 3</span>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 110px 34px;gap:8px;margin-bottom:6px;padding:0 2px;">
+          <div class="label">Product name</div>
+          <div class="label">Price (₦)</div>
+          <div></div>
+        </div>
+
+        <div class="product-row">
+          <input class="input filled" type="text" value="Indomie" />
+          <input class="input price-input filled" type="text" value="1,500" />
+          <button class="remove-btn">×</button>
+        </div>
+        <div class="product-row">
+          <input class="input filled" type="text" value="Egg sauce" />
+          <input class="input price-input filled" type="text" value="800" />
+          <button class="remove-btn">×</button>
+        </div>
+        <div class="product-row">
+          <input class="input" type="text" placeholder="Add a product..." style="color:#B4B2A9;" />
+          <input class="input price-input" type="text" placeholder="0" style="color:#B4B2A9;" />
+          <button class="remove-btn">×</button>
+        </div>
+
+        <button class="add-product-btn">＋ Add another product</button>
+      </div>
+
+      <!-- SECTION 3: DASHBOARD -->
+      <div class="fsection">
+        <div class="fsection-header">
+          <div class="fsec-icon">🔐</div>
+          <span class="fsec-label">Dashboard access</span>
+          <span class="fsec-sub">Step 3 of 3</span>
+        </div>
+
+        <div class="field">
+          <div class="label">Set your dashboard PIN</div>
+          <div class="pin-row">
+            <input class="pin-digit" type="password" maxlength="1" value="•" />
+            <input class="pin-digit" type="password" maxlength="1" value="•" />
+            <input class="pin-digit" type="password" maxlength="1" value="•" />
+            <input class="pin-digit" type="password" maxlength="1" value="•" />
+          </div>
+          <div class="input-hint" style="margin-top:8px;">Protects your private order dashboard. Don't forget this.</div>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="submit-area">
+        <button class="submit-btn">
+          ✦ &nbsp;Generate my storefront
+        </button>
+        <div class="submit-meta">
+          <div class="ai-badge">✦ AI</div>
+          Builds in ~15 seconds · Free forever
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: LIVE PREVIEW -->
+    <div class="preview-col">
+      <div class="preview-label">Live preview</div>
+
+      <div class="phone-frame">
+        <div class="phone-header">
+          <div class="phone-logo">OE</div>
+          <div class="phone-biz">
+            <div class="phone-biz-name">Olam's Enterprise</div>
+            <div class="phone-biz-cat">FOOD & SNACKS · UI</div>
+          </div>
+          <div class="phone-wa">💬</div>
+        </div>
+        <div class="phone-body">
+          <div class="phone-section-t">Menu</div>
+          <div class="phone-product">
+            <span class="phone-prod-name">Indomie</span>
+            <span class="phone-prod-price">₦1,500</span>
+          </div>
+          <div class="phone-product">
+            <span class="phone-prod-name">Egg sauce</span>
+            <span class="phone-prod-price">₦800</span>
+          </div>
+          <button class="phone-order-btn">Order via WhatsApp</button>
+          <div class="phone-link">kioskk.me/olams-enterprise</div>
+        </div>
+      </div>
+
+      <div class="preview-info">
+        <div class="pinfo-row">
+          <span class="pinfo-key">Your store link</span>
+          <span class="pinfo-val" style="font-family:'SF Mono',monospace;font-size:11px;">kioskk.me/olams-enterprise</span>
+        </div>
+        <div class="pinfo-row">
+          <span class="pinfo-key">Category</span>
+          <span class="pinfo-val">Food & Snacks</span>
+        </div>
+        <div class="pinfo-row">
+          <span class="pinfo-key">Products</span>
+          <span class="pinfo-val">2 items</span>
+        </div>
+        <div class="pinfo-row">
+          <span class="pinfo-key">Orders via</span>
+          <span class="pinfo-val">WhatsApp</span>
+        </div>
+        <div class="pinfo-row">
+          <span class="pinfo-key">Status</span>
+          <span class="pinfo-val" style="display:flex;align-items:center;gap:5px;"><span style="width:6px;height:6px;border-radius:50%;background:#4CAF50;display:inline-block;"></span> Ready to generate</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

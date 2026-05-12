@@ -3,8 +3,8 @@ import "./globals.css";
 import AdminGesture from "@/components/admin-gesture";
 
 export const metadata: Metadata = {
-  title: "kioskk.me",
-  description: "AI-powered micro-business storefront generator",
+  title: "kioskk.me | Your store in 60 seconds",
+  description: "AI storefronts for campus vendors and small business owners.",
 };
 
 export default function RootLayout({

@@ -1,25 +1,19 @@
-@import "@fontsource/instrument-sans/400.css";
-@import "@fontsource/instrument-sans/500.css";
-@import "@fontsource/instrument-sans/600.css";
-@import "@fontsource/fraunces/400.css";
-@import "@fontsource/fraunces/700.css";
-@import "@fontsource/fraunces/900.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 @import "tailwindcss";
 
 :root {
-  --kk-bg: #f7f4ef;
-  --kk-ink: #1a1208;
-  --kk-muted: #8a7f72;
-  --kk-border: #e8e2d9;
-  --kk-card: #ffffff;
-  --kk-accent: #e8450a;
+  --kk-bg: #fafaf8;
+  --kk-ink: #1a1a18;
+  --kk-muted: #888780;
+  --kk-border: rgba(0, 0, 0, 0.07);
+  --kk-card: #fafaf8;
+  --kk-accent: #1a1a18;
 }
 
 @theme inline {
   --color-background: var(--kk-bg);
   --color-foreground: var(--kk-ink);
-  --font-sans: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 html,
