@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 
 import { createAnonServerSupabase } from "@/lib/supabase/anonServer";
 
-export async function GET(_: Request, { params }: { params: { slug: string } }) {
-  const slug = params.slug;
+export async function GET(_: Request, { params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
   const supabase = createAnonServerSupabase();
 
   const { data, error } = await supabase
@@ -19,4 +19,3 @@ export async function GET(_: Request, { params }: { params: { slug: string } }) 
 
   return NextResponse.json({ business: data }, { headers: { "cache-control": "no-store" } });
 }
-

@@ -15,13 +15,14 @@ function getBearerToken(req: Request): string | null {
 }
 
 // GET /api/orders/:businessId
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const resolvedParams = await params;
     const token = getBearerToken(req);
     if (!token) return NextResponse.json({ error: "Missing token." }, { status: 401 });
 
     const claims = verifyOwnerToken(token);
-    if (claims.businessId !== params.id) return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+    if (claims.businessId !== resolvedParams.id) return NextResponse.json({ error: "Forbidden." }, { status: 403 });
 
     const supabase = createServerSupabase();
     const { data, error } = await supabase
@@ -41,8 +42,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 // PATCH /api/orders/:orderId
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const resolvedParams = await params;
     const token = getBearerToken(req);
     if (!token) return NextResponse.json({ error: "Missing token." }, { status: 401 });
 
@@ -54,7 +56,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .select("id,business_id")
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .maybeSingle();
 
     if (orderError) return NextResponse.json({ error: orderError.message }, { status: 500 });
@@ -64,7 +66,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     const { data: updated, error } = await supabase
       .from("orders")
       .update({ status: parsed.status })
-      .eq("id", params.id)
+      .eq("id", resolvedParams.id)
       .select("id,status")
       .single();
 
@@ -75,4 +77,3 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
-

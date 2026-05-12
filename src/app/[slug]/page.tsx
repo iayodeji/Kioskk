@@ -19,14 +19,19 @@ type BusinessRow = {
   created_at: string;
 };
 
-export default async function BusinessPage({ params }: { params: { slug: string } }) {
+export default async function BusinessPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const resolvedParams = await params;
   const supabase = createAnonServerSupabase();
   const { data, error } = await supabase
     .from("businesses")
     .select(
       "id,slug,business_name,owner_name,whatsapp,category,location,currency,currency_symbol,items,ai_config,created_at",
     )
-    .eq("slug", params.slug)
+    .eq("slug", resolvedParams.slug)
     .maybeSingle<BusinessRow>();
 
   if (error) throw new Error(error.message);
@@ -34,4 +39,3 @@ export default async function BusinessPage({ params }: { params: { slug: string 
 
   return <StoreApp business={data} />;
 }
-
