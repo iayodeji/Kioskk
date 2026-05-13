@@ -54,8 +54,14 @@ export default function CreatePage() {
   const [pin, setPin] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [shareLabel, setShareLabel] = useState("Share");
 
   const slug = useMemo(() => slugifyBusinessName(businessName || ""), [businessName]);
+
+  const shareableUrl = useMemo(() => {
+    const base = /^https?:\/\//.test(domain) ? domain : `https://${domain}`;
+    return `${base}/${slug || "your-store"}`;
+  }, [domain, slug]);
 
   const canSubmit = !!businessName && !!ownerName && /^\d{4,6}$/.test(pin) && items.length > 0 && items.every((it) => it.name && validatePrice(it.price));
 
@@ -97,27 +103,53 @@ export default function CreatePage() {
     }
   }
 
+  async function handleShareStore() {
+    try {
+      const title = `${businessName || "My store"} on kioskk.me`;
+      const text = "Check out my storefront and order directly here:";
+
+      if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+        await navigator.share({ title, text, url: shareableUrl });
+        setShareLabel("Shared");
+      } else if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(shareableUrl);
+        setShareLabel("Copied");
+      }
+    } catch {
+      // User canceled native share, or clipboard permission failed.
+    } finally {
+      window.setTimeout(() => setShareLabel("Share"), 1400);
+    }
+  }
+
   return (
     <main style={{ background: "var(--kk-bg)", minHeight: "100vh", color: "var(--kk-ink)" }}>
       <div className="page">
         <nav className="nav">
-          <div className="logo"><div className="lm">KK</div><div className="lt">kioskk.me</div></div>
+          <div className="logo">
+            <img className="brand-logo brand-logo--compact" src="/kioskk-logo.svg" alt="kioskk.me" />
+          </div>
           <div style={{ fontSize: 11, color: '#B4B2A9', background: '#EEECEA', padding: '6px 10px', borderRadius: 999 }}>✦ AI</div>
         </nav>
 
-        <div className="eyebrow">New storefront</div>
-        <h1 className="h1">Tell us about your<br /><strong>business.</strong></h1>
-        <p className="sub">Under 60 seconds. No account needed.</p>
+        <div className="create-shell">
+          <section className="create-main">
+            <div className="eyebrow">New storefront</div>
+            <h1 className="h1">Tell us about your<br /><strong>business.</strong></h1>
+            <p className="sub">Under 60 seconds. No account needed.</p>
 
-        <div className="link-banner" aria-hidden={false}>
-          <div>
-            <div className="link-label">Your store will live at</div>
-            <div className="link-url">kioskk.me/{slug || 'your-store'}</div>
-          </div>
-          <div style={{ width: 8, height: 8, borderRadius: 8, background: '#4CAF50' }} />
-        </div>
+            <div className="link-banner" aria-hidden={false}>
+              <div>
+                <div className="link-label">Your store will live at</div>
+                <div className="link-url">kioskk.me/{slug || 'your-store'}</div>
+              </div>
+              <button type="button" className="link-share-btn" onClick={handleShareStore}>
+                <i className="ti ti-share" aria-hidden="true" />
+                {shareLabel}
+              </button>
+            </div>
 
-        <form onSubmit={submit} style={{ padding: '0 6px 60px' }}>
+            <form onSubmit={submit} style={{ padding: '0 6px 60px' }}>
           <div className="card">
             <div style={{ fontWeight: 700, marginBottom: 8 }}>Business info</div>
             <div className="field">
@@ -186,41 +218,43 @@ export default function CreatePage() {
           </div>
 
           {error && <div style={{ margin: 12, color: 'red', background: '#fff', padding: 12, borderRadius: 10 }}>{error}</div>}
-        </form>
+            </form>
 
-        <div className="mini-preview">
-          <div className="mp-head">
-            <div className="mp-logo">{(businessName && businessName[0]?.toUpperCase()) || 'KK'}</div>
-            <div>
-              <div style={{ fontWeight: 700 }}>{businessName || "Your store"}</div>
-              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{(category || '').toUpperCase()} · {location}</div>
+            <div className="cta-fixed">
+              <button className="cta-btn" onClick={() => { if(!loading) { const el = document.querySelector('form'); if(el) el.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})); } }}>{loading ? 'Generating…' : '✦ Generate my storefront'}</button>
             </div>
-          </div>
-          <div className="mp-body">
-            <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.08em', marginBottom: 8, color: '#B4B2A9' }}>Menu</div>
-            {items.filter(it=>it.name).map((it, idx) => (
-              <div key={idx} className="mp-item"><div style={{fontWeight:500}}>{it.name}</div><div>{currencySymbol}{it.price}</div></div>
-            ))}
-            <button 
-              className="mp-order-btn" 
-              onClick={() => {
-                const storeUrl = `${window.location.origin}/${slug || 'your-store'}`;
-                const message = `Hi! I'd like to place an order from ${businessName}. Check it out: ${storeUrl}`;
-                const encodedMessage = encodeURIComponent(message);
-                const whatsappPhone = digitsOnly(whatsapp);
-                if (whatsappPhone) {
-                  window.open(`https://wa.me/${whatsappPhone}?text=${encodedMessage}`, '_blank');
-                }
-              }}
-            >
-              Order via WhatsApp
-            </button>
-            <div style={{ textAlign: 'center', marginTop: 8, color: '#B4B2A9', fontSize: 12 }}>{domain}/{slug || 'your-store'}</div>
-          </div>
-        </div>
+          </section>
 
-        <div className="cta-fixed">
-          <button className="cta-btn" onClick={() => { if(!loading) { const el = document.querySelector('form'); if(el) el.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})); } }}>{loading ? 'Generating…' : '✦ Generate my storefront'}</button>
+          <aside className="mini-preview">
+            <div className="mp-head">
+              <div className="mp-logo">{(businessName && businessName[0]?.toUpperCase()) || 'KK'}</div>
+              <div>
+                <div style={{ fontWeight: 700 }}>{businessName || "Your store"}</div>
+                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{(category || '').toUpperCase()} · {location}</div>
+              </div>
+            </div>
+            <div className="mp-body">
+              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.08em', marginBottom: 8, color: '#B4B2A9' }}>Menu</div>
+              {items.filter(it=>it.name).map((it, idx) => (
+                <div key={idx} className="mp-item"><div style={{fontWeight:500}}>{it.name}</div><div>{currencySymbol}{it.price}</div></div>
+              ))}
+              <button
+                className="mp-order-btn"
+                onClick={() => {
+                  const storeUrl = `${window.location.origin}/${slug || 'your-store'}`;
+                  const message = `Hi! I'd like to place an order from ${businessName}. Check it out: ${storeUrl}`;
+                  const encodedMessage = encodeURIComponent(message);
+                  const whatsappPhone = digitsOnly(whatsapp);
+                  if (whatsappPhone) {
+                    window.open(`https://wa.me/${whatsappPhone}?text=${encodedMessage}`, '_blank');
+                  }
+                }}
+              >
+                Order via WhatsApp
+              </button>
+              <div style={{ textAlign: 'center', marginTop: 8, color: '#B4B2A9', fontSize: 12 }}>{domain}/{slug || 'your-store'}</div>
+            </div>
+          </aside>
         </div>
       </div>
     </main>
