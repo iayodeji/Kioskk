@@ -3,10 +3,9 @@ import React from 'react';
 import { slugify, initials, formatPrice } from './utils';
 
 export default function TemplateBold(props){
-  const { storeName='Store', ownerName, category='Store', location='', whatsappNumber='', currencySymbol='₦', tagline, products=[] } = props || {};
+  const { storeName='Store', category='Store', location='', whatsappNumber='', currencySymbol='₦', tagline, products=[] } = props || {};
   const autoTag = tagline || `${category} in ${location}`;
   const featured = products.find(p=>p.featured) || products[0] || null;
-  const others = products.filter(p=> p !== featured);
   const waLink = `https://wa.me/${whatsappNumber || ''}?text=${encodeURIComponent(`Hi, I'd like to order from ${storeName}`)}`;
 
   const css = `
@@ -43,7 +42,7 @@ export default function TemplateBold(props){
 
         <div className="section">
           <div className="sec-header">
-            <div className="sec-t">This week's special</div>
+            <div className="sec-t">This week&apos;s special</div>
           </div>
           {featured && (
             <div className="feat-card">

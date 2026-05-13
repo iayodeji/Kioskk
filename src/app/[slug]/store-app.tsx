@@ -75,22 +75,6 @@ function formatMoney(amount: number, symbol: string) {
   return `${symbol}${n.toLocaleString()}`;
 }
 
-function fillWhatsAppTemplate(
-  template: string,
-  data: { orderId: string; name: string; items: string; total: string; hostel: string },
-) {
-  return template
-    .replaceAll("{{orderId}}", data.orderId)
-    .replaceAll("{{name}}", data.name)
-    .replaceAll("{{items}}", data.items)
-    .replaceAll("{{total}}", data.total)
-    .replaceAll("{{hostel}}", data.hostel);
-}
-
-function waLink(phone: string, message: string) {
-  return `https://wa.me/${digitsOnly(phone)}?text=${encodeURIComponent(message)}`;
-}
-
 function getTemplateComponent(templateId: string) {
   switch ((templateId || "").toLowerCase()) {
     case "cream":
@@ -175,26 +159,14 @@ export default function StoreApp({ business }: { business: Business }) {
   const whatsapp = business.whatsapp_number ?? business.whatsapp ?? '';
   const selectedTemplateId = String((business as { template_id?: string }).template_id || 'noir');
   const [view, setView] = useState<"store" | "dashboard">("store");
-  const [cart, setCart] = useState<Record<string, number>>({});
-
-  const [checkoutName, setCheckoutName] = useState("");
-  const [checkoutPhone, setCheckoutPhone] = useState("");
-  const [checkoutAddress, setCheckoutAddress] = useState("");
-  const [checkoutNotes, setCheckoutNotes] = useState("");
-
-  const [placing, setPlacing] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState<{
-    orderRef: string;
-    total: number;
-    waUrl: string;
-  } | null>(null);
-  const [storeError, setStoreError] = useState<string | null>(null);
+  const [cart] = useState<Record<string, number>>({});
 
   const [pin, setPin] = useState("");
   const [ownerToken, setOwnerToken] = useState<string | null>(null);
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [dashError, setDashError] = useState<string | null>(null);
+  const [orderSuccess] = useState(false);
 
   const config: AiConfig = useMemo(() => {
     if (isAiConfig(business.ai_config)) return business.ai_config;
@@ -273,76 +245,6 @@ export default function StoreApp({ business }: { business: Business }) {
       else url.searchParams.delete("view");
       window.history.replaceState({}, "", `${url.pathname}${url.search}`);
     } catch {}
-  };
-
-  const addToCart = (name: string) => {
-    setCart((prev) => ({ ...prev, [name]: (prev[name] ?? 0) + 1 }));
-  };
-  const decFromCart = (name: string) => {
-    setCart((prev) => {
-      const next = { ...prev };
-      const n = (next[name] ?? 0) - 1;
-      if (n <= 0) delete next[name];
-      else next[name] = n;
-      return next;
-    });
-  };
-
-  const placeOrder = async () => {
-    setStoreError(null);
-    if (cartEntries.length < 1) {
-      setStoreError("Add at least 1 item to your cart.");
-      return;
-    }
-    if (!checkoutName.trim()) {
-      setStoreError("Enter your name.");
-      return;
-    }
-    if (digitsOnly(checkoutPhone).length < 8) {
-      setStoreError("Enter a valid WhatsApp number.");
-      return;
-    }
-    if (!checkoutAddress.trim()) {
-      setStoreError("Enter your hostel / delivery address.");
-      return;
-    }
-
-    setPlacing(true);
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          slug: business.slug,
-          customerName: checkoutName.trim(),
-          customerPhone: digitsOnly(checkoutPhone),
-          deliveryAddress: checkoutAddress.trim(),
-          notes: checkoutNotes.trim() ? checkoutNotes.trim() : undefined,
-          items: cartEntries.map((it) => ({ name: it.name, qty: it.qty })),
-        }),
-      });
-      const data = (await res.json()) as { order?: { order_ref: string; total: number }; error?: string };
-      if (!res.ok) throw new Error(data.error || "Failed to place order.");
-      if (!data.order) throw new Error("Missing order response.");
-
-      const itemsText = cartEntries.map((it) => `${it.name} x${it.qty}`).join(", ");
-      const totalText = formatMoney(data.order.total, business.currency_symbol);
-      const message = fillWhatsAppTemplate(config.whatsappMessage, {
-        orderId: data.order.order_ref,
-        name: checkoutName.trim(),
-        items: itemsText,
-        total: totalText,
-        hostel: checkoutAddress.trim(),
-      });
-      const url = waLink(whatsapp, message);
-
-      setOrderSuccess({ orderRef: data.order.order_ref, total: data.order.total, waUrl: url });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong.";
-      setStoreError(message);
-    } finally {
-      setPlacing(false);
-    }
   };
 
   const verifyPin = async () => {

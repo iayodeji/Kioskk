@@ -18,15 +18,6 @@ const requestSchema = z.object({
   tagline: z.string().optional(),
 });
 
-function withSlugSuffix(base: string, attempt: number) {
-  if (attempt === 0) return base;
-  const rand = crypto.getRandomValues(new Uint8Array(2));
-  const hex = Array.from(rand)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return `${base}-${hex}`;
-}
-
 export async function POST(req: Request) {
   try {
     const body: unknown = await req.json();

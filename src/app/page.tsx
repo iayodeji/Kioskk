@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   const stats = [
@@ -30,7 +31,7 @@ export default function Home() {
       <div className="r">
         <nav className="nav">
           <div className="logo">
-            <img className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" />
+            <Image className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" width={40} height={40} />
           </div>
           <Link className="nav-cta" href="/create">Create your store →</Link>
         </nav>
@@ -186,7 +187,7 @@ export default function Home() {
 
         <footer className="footer">
           <div className="logo">
-            <img className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" />
+            <Image className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" width={40} height={40} />
           </div>
           <div className="foot-tag">© 2026 kioskk.me</div>
           <div className="foot-txt">Built for Africa&#39;s next million vendors.</div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
@@ -155,20 +156,23 @@ export default function CreatePage() {
   const canSubmit = !!businessName && !!ownerName && /^\d{4}$/.test(pin) && items.length > 0 && items.every((it) => it.name && validatePrice(it.price));
 
   // category -> suggested template mapping
-  const suggestionMap: Record<string, string> = {
-    'Food & Snacks': 'noir',
-    'Fashion & Clothing': 'cream',
-    'Skincare & Beauty': 'bold',
-    'Electronics & Accessories': 'minimal',
-    'Handmade & Jewellery': 'luxury',
-  };
+  const suggestionMap: Record<string, string> = useMemo(
+    () => ({
+      'Food & Snacks': 'noir',
+      'Fashion & Clothing': 'cream',
+      'Skincare & Beauty': 'bold',
+      'Electronics & Accessories': 'minimal',
+      'Handmade & Jewellery': 'luxury',
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!userSelectedTemplate && category) {
       const suggestion = suggestionMap[category] || 'minimal';
       setTemplateId(suggestion);
     }
-  }, [category, userSelectedTemplate]);
+  }, [category, userSelectedTemplate, suggestionMap]);
 
   async function submit(e?: React.FormEvent) {
     if (e) e.preventDefault();
@@ -259,7 +263,7 @@ export default function CreatePage() {
       <div className="page">
         <nav className="nav">
           <div className="logo">
-            <img className="brand-logo brand-logo--compact" src="/kioskk-logo.svg" alt="kioskk.me" />
+            <Image className="brand-logo brand-logo--compact" src="/kioskk-logo.svg" alt="kioskk.me" width={32} height={32} />
           </div>
         </nav>
 

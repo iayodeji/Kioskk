@@ -4,7 +4,7 @@ import { slugify, initials, formatPrice } from './utils';
 
 export default function TemplateNoir(props){
   const {
-    storeName = 'Store', ownerName, category='Store', location='', whatsappNumber='', currencySymbol='₦', tagline, products=[]
+    storeName = 'Store', category='Store', location='', whatsappNumber='', currencySymbol='₦', tagline, products=[]
   } = props || {};
 
   const autoTag = tagline || `${category} in ${location}`;

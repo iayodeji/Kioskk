@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { createServerSupabase } from '../../../lib/supabase';
 import StoreApp from './store-app';
 
@@ -40,9 +41,9 @@ export default async function BusinessPage({ params }: { params: Promise<{ slug:
   if (!data) {
     return (
       <main style={{ padding: 40 }}>
-        <h1>This store doesn't exist yet.</h1>
+        <h1>This store doesn&apos;t exist yet.</h1>
         <p>Create yours at kioskk.me</p>
-        <a href="/create"><button>Create a store</button></a>
+        <Link href="/create"><button>Create a store</button></Link>
       </main>
     );
   }

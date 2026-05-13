@@ -1,12 +1,11 @@
 "use client";
 import React from 'react';
-import { slugify, initials, formatPrice } from './utils';
+import { slugify, formatPrice } from './utils';
 
 export default function TemplateCream(props){
-  const { storeName='Store', ownerName, category='Store', location='', whatsappNumber='', currencySymbol='₦', tagline, products=[] } = props || {};
+  const { storeName='Store', category='Store', location='', whatsappNumber='', currencySymbol='₦', tagline, products=[] } = props || {};
   const autoTag = tagline || `${category} in ${location}`;
   const featured = products.find(p=>p.featured) || products[0] || null;
-  const others = products.filter(p=> p !== featured);
   const waLink = `https://wa.me/${whatsappNumber || ''}?text=${encodeURIComponent(`Hi, I'd like to order from ${storeName}`)}`;
 
   const css = `
@@ -33,7 +32,7 @@ export default function TemplateCream(props){
           <div className="hero-tag">{tagline || autoTag}</div>
         </div>
 
-        <div className="section-label">This week's pick</div>
+        <div className="section-label">This week&apos;s pick</div>
         {featured && (
           <div className="featured-card">
             <div className="feat-top">
