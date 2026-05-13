@@ -89,8 +89,9 @@ export default function CreatePage() {
       if (!res.ok) throw new Error(data?.error || "Failed to create store");
       const resultingSlug = data.slug;
       if (resultingSlug) router.push(`/${resultingSlug}`);
-    } catch (err: any) {
-      setError(err?.message || "Server error");
+    } catch (err: unknown) {
+      if (err instanceof Error) setError(err.message);
+      else setError(String(err) || "Server error");
     } finally {
       setLoading(false);
     }
@@ -98,61 +99,6 @@ export default function CreatePage() {
 
   return (
     <main style={{ background: "var(--kk-bg)", minHeight: "100vh", color: "var(--kk-ink)" }}>
-      <style>{`
-        .page{max-width:390px;margin:0 auto;padding-bottom:92px;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial}
-        .card{background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:14px;margin:12px 12px;padding:12px;}
-        .nav{display:flex;align-items:center;justify-content:space-between;padding:12px;margin:0 6px;border-bottom:0.5px solid rgba(0,0,0,0.07);position:sticky;top:0;background:var(--kk-bg);z-index:10}
-        .logo{display:flex;align-items:center;gap:10px}
-        .lm{width:28px;height:28px;background:#1a1a18;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#FAFAF8;font-size:11px;font-weight:600}
-        .lt{font-size:13px;font-weight:500}
-        .eyebrow{font-size:12px;font-weight:600;letter-spacing:1px;color:#B4B2A9;margin:10px 12px}
-        .h1{font-size:26px;font-weight:300;line-height:1.15;margin:6px 12px}
-        .h1 strong{font-weight:500}
-        .sub{font-size:13px;color:#888780;margin:8px 12px}
-        .link-banner{margin:12px;border-radius:10px;background:#1a1a18;color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between}
-        .link-label{font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px}
-        .link-url{font-family:SF Mono,monospace;font-size:13px}
-        .field{display:flex;flex-direction:column;margin-bottom:10px}
-        .label{font-size:10px;color:#B4B2A9;margin-bottom:6px;font-weight:600}
-        .input{height:44px;border-radius:9px;border:0.5px solid rgba(0,0,0,0.1);padding:0 12px;font-size:15px;background:var(--kk-card);outline:none}
-        .product-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
-        .product-name{flex:1}
-        .product-price{width:88px}
-        .remove-btn{width:36px;height:36px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.1);background:transparent;color:#B4B2A9}
-        .add-btn{width:100%;height:40px;border-radius:9px;border:0.5px dashed rgba(0,0,0,0.15);background:transparent;color:#888780;font-weight:600}
-        .pin-row{display:flex;gap:10px}
-        .pin-box{width:52px;height:56px;border-radius:10px;border:0.5px solid rgba(0,0,0,0.12);display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--kk-card)}
-        .mini-preview{margin:12px;border-radius:14px;overflow:hidden;border:0.5px solid rgba(0,0,0,0.08);}
-        .mp-head{background:#1a1a18;color:#fff;padding:12px;display:flex;gap:8px;align-items:center}
-        .mp-logo{width:34px;height:34px;background:#fff;color:#1a1a18;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
-        .mp-body{background:#fff;padding:12px}
-        .mp-item{display:flex;justify-content:space-between;padding:8px;background:var(--kk-bg);border-radius:8px;margin-bottom:8px;border:0.5px solid rgba(0,0,0,0.06)}
-        .mp-order-btn{width:100%;height:36px;background:#1a1a18;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;margin-top:10px}
-        .cta-fixed{position:fixed;left:0;right:0;bottom:0;padding:12px;background:linear-gradient(180deg,transparent,var(--kk-bg));display:flex;align-items:flex-end;justify-content:center}
-        .cta-btn{width:calc(100% - 24px);height:52px;background:#1a1a18;color:#fff;border-radius:12px;border:none;font-size:15px;font-weight:600}
-
-        /* Responsive adjustments (mobile-first) */
-        @media (min-width: 640px) {
-          .page{max-width:680px;padding-bottom:120px}
-          .h1{font-size:32px}
-          .card{margin:16px;padding:16px;border-radius:16px}
-          .input{height:48px}
-          .product-price{width:120px}
-          .pin-box{width:56px;height:56px;font-size:24px}
-        }
-
-        @media (min-width: 1024px) {
-          .page{max-width:980px}
-          .nav{padding:18px;margin:0 18px}
-          /* layout two-column on wide screens */
-          .page{display:grid;grid-template-columns:1fr 360px;gap:20px}
-          .mini-preview{margin:0;border-radius:12px;height:fit-content}
-          .card{margin:18px;padding:18px}
-          .h1{font-size:40px}
-        }
-
-      `}</style>
-
       <div className="page">
         <nav className="nav">
           <div className="logo"><div className="lm">KK</div><div className="lt">kioskk.me</div></div>
