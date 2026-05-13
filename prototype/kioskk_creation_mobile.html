@@ -1,0 +1,268 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{margin:0;}
+  .r{font-family:'Inter',sans-serif;background:#FAFAF8;color:#1a1a18;max-width:390px;margin:0 auto;min-height:100vh;position:relative;}
+
+  /* NAV */
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:0.5px solid rgba(0,0,0,0.07);position:sticky;top:0;background:#FAFAF8;z-index:10;}
+  .logo{display:flex;align-items:center;gap:8px;}
+  .lm{width:28px;height:28px;background:#1a1a18;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#FAFAF8;font-size:11px;font-weight:600;}
+  .lt{font-size:13px;font-weight:500;letter-spacing:-0.2px;}
+  .nav-pill{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:500;color:#5F5E5A;background:#EEECEA;border:0.5px solid rgba(0,0,0,0.08);padding:4px 10px;border-radius:100px;}
+  .dot-green{width:5px;height:5px;border-radius:50%;background:#4CAF50;}
+
+  /* HERO TOP */
+  .hero-top{padding:28px 20px 24px;}
+  .step-eyebrow{font-size:10px;font-weight:500;letter-spacing:1.8px;text-transform:uppercase;color:#B4B2A9;margin-bottom:10px;}
+  .hero-h{font-size:26px;font-weight:300;letter-spacing:-1px;line-height:1.15;margin-bottom:6px;}
+  .hero-h strong{font-weight:500;}
+  .hero-sub{font-size:13px;color:#888780;line-height:1.55;}
+
+  /* LINK PREVIEW BANNER */
+  .link-banner{margin:0 20px 28px;background:#1a1a18;border-radius:10px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;}
+  .link-banner-l{display:flex;flex-direction:column;gap:2px;}
+  .link-banner-label{font-size:9px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+  .link-banner-url{font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:#fff;letter-spacing:0.2px;}
+  .link-banner-dot{width:7px;height:7px;border-radius:50%;background:#4CAF50;}
+
+  /* PROGRESS STEPS */
+  .progress{display:flex;align-items:center;padding:0 20px;margin-bottom:28px;}
+  .ps{display:flex;align-items:center;gap:6px;}
+  .ps-circle{width:22px;height:22px;border-radius:50%;border:0.5px solid rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#B4B2A9;flex-shrink:0;}
+  .ps-circle.done{background:#1a1a18;border-color:#1a1a18;color:#FAFAF8;}
+  .ps-circle.active{background:#1a1a18;border-color:#1a1a18;color:#FAFAF8;box-shadow:0 0 0 3px rgba(26,26,24,0.1);}
+  .ps-txt{font-size:11px;color:#B4B2A9;}
+  .ps-txt.active{color:#1a1a18;font-weight:500;}
+  .ps-line{flex:1;height:0.5px;background:rgba(0,0,0,0.1);margin:0 8px;}
+  .ps-line.done{background:#1a1a18;}
+
+  /* SECTIONS */
+  .section{margin:0 20px 8px;background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:14px;overflow:hidden;}
+  .sec-head{display:flex;align-items:center;gap:10px;padding:16px 16px 14px;border-bottom:0.5px solid rgba(0,0,0,0.06);}
+  .sec-icon{font-size:16px;}
+  .sec-title{font-size:13px;font-weight:500;letter-spacing:-0.2px;}
+  .sec-step{font-size:10px;color:#B4B2A9;margin-left:auto;letter-spacing:0.2px;}
+  .sec-body{padding:16px;}
+
+  /* FIELDS */
+  .field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+  .field:last-child{margin-bottom:0;}
+  .label{font-size:9px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:#B4B2A9;}
+  .input{width:100%;height:44px;background:#FAFAF8;border:0.5px solid rgba(0,0,0,0.1);border-radius:9px;padding:0 14px;font-size:14px;font-family:'Inter',sans-serif;color:#1a1a18;outline:none;transition:border-color 0.15s;}
+  .input:focus{border-color:rgba(0,0,0,0.35);background:#fff;}
+  .input.filled{border-color:rgba(0,0,0,0.15);}
+  .input-hint{font-size:10px;color:#B4B2A9;margin-top:3px;line-height:1.4;}
+  select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23888780' stroke-width='1.2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-color:#FAFAF8;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+  /* PRODUCTS */
+  .product-col-heads{display:grid;grid-template-columns:1fr 90px 32px;gap:8px;margin-bottom:6px;padding:0 1px;}
+  .product-row{display:grid;grid-template-columns:1fr 90px 32px;gap:8px;align-items:center;margin-bottom:8px;}
+  .product-row .input{min-width:0;}
+  .remove-btn{width:32px;height:32px;border:0.5px solid rgba(0,0,0,0.1);border-radius:7px;background:none;cursor:pointer;color:#B4B2A9;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;flex-shrink:0;}
+  .add-btn{width:100%;height:40px;border:0.5px dashed rgba(0,0,0,0.15);border-radius:9px;background:none;font-size:12px;font-weight:500;color:#888780;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px;}
+
+  /* PIN */
+  .pin-row{display:flex;gap:10px;margin-top:2px;}
+  .pin-box{width:52px;height:56px;border:0.5px solid rgba(0,0,0,0.12);border-radius:10px;background:#FAFAF8;text-align:center;font-size:22px;font-family:'Inter',sans-serif;font-weight:300;color:#1a1a18;outline:none;display:flex;align-items:center;justify-content:center;}
+  .pin-filled{background:#fff;border-color:rgba(0,0,0,0.2);font-size:26px;color:#1a1a18;}
+
+  /* MINI PREVIEW */
+  .mini-preview{margin:20px 20px 8px;border:0.5px solid rgba(0,0,0,0.08);border-radius:14px;overflow:hidden;}
+  .mp-head{background:#1a1a18;padding:14px 16px;display:flex;align-items:center;gap:10px;}
+  .mp-logo{width:26px;height:26px;background:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#1a1a18;}
+  .mp-name{font-size:13px;font-weight:500;color:#fff;letter-spacing:-0.2px;}
+  .mp-cat{font-size:9px;color:rgba(255,255,255,0.4);letter-spacing:0.4px;}
+  .mp-body{padding:12px 14px;background:#fff;}
+  .mp-section-t{font-size:8px;font-weight:500;letter-spacing:1.4px;text-transform:uppercase;color:#B4B2A9;margin-bottom:8px;}
+  .mp-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:#FAFAF8;border-radius:7px;margin-bottom:5px;border:0.5px solid rgba(0,0,0,0.06);}
+  .mp-item-name{font-size:12px;font-weight:500;color:#1a1a18;}
+  .mp-item-price{font-size:12px;color:#1a1a18;}
+  .mp-order-btn{width:100%;height:36px;background:#1a1a18;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;margin-top:10px;cursor:pointer;}
+  .mp-link{text-align:center;font-size:9px;color:#B4B2A9;margin-top:8px;font-family:'SF Mono',monospace;}
+  .mp-label{font-size:10px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#B4B2A9;padding:0 20px;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .mp-label::after{content:'';flex:1;height:0.5px;background:rgba(0,0,0,0.08);}
+
+  /* CTA */
+  .cta-wrap{padding:20px 20px 40px;}
+  .cta-btn{width:100%;height:52px;background:#1a1a18;color:#FAFAF8;border:none;border-radius:12px;font-size:15px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-0.3px;}
+  .cta-meta{text-align:center;margin-top:10px;font-size:11px;color:#B4B2A9;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .ai-pill{display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:500;background:#EEECEA;color:#888780;padding:3px 7px;border-radius:100px;}
+</style>
+
+<div class="r">
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="logo">
+      <div class="lm">KK</div>
+      <span class="lt">kioskk.me</span>
+    </div>
+    <div class="nav-pill"><div class="dot-green"></div>AI-powered</div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero-top">
+    <div class="step-eyebrow">New storefront</div>
+    <h1 class="hero-h">Tell us about your<br><strong>business.</strong></h1>
+    <p class="hero-sub">Under 60 seconds. No account needed.</p>
+  </div>
+
+  <!-- LIVE LINK BANNER -->
+  <div class="link-banner">
+    <div class="link-banner-l">
+      <span class="link-banner-label">Your store will live at</span>
+      <span class="link-banner-url">kioskk.me/olams-enterprise</span>
+    </div>
+    <div class="link-banner-dot"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress">
+    <div class="ps"><div class="ps-circle done">✓</div><span class="ps-txt active">Business</span></div>
+    <div class="ps-line done"></div>
+    <div class="ps"><div class="ps-circle active">2</div><span class="ps-txt active">Products</span></div>
+    <div class="ps-line"></div>
+    <div class="ps"><div class="ps-circle">3</div><span class="ps-txt">Dashboard</span></div>
+  </div>
+
+  <!-- SECTION 1: BUSINESS -->
+  <div class="section">
+    <div class="sec-head">
+      <span class="sec-icon">🏪</span>
+      <span class="sec-title">Business info</span>
+      <span class="sec-step">1 of 3</span>
+    </div>
+    <div class="sec-body">
+      <div class="grid2" style="margin-bottom:12px;">
+        <div class="field">
+          <div class="label">Business name</div>
+          <input class="input filled" type="text" value="Olam's Enterprise" />
+        </div>
+        <div class="field">
+          <div class="label">Owner name</div>
+          <input class="input filled" type="text" value="Ola" />
+        </div>
+      </div>
+      <div class="field">
+        <div class="label">WhatsApp number</div>
+        <input class="input filled" type="text" value="08167906554" />
+        <div class="input-hint">Customers place orders through this number</div>
+      </div>
+      <div class="field">
+        <div class="label">Category</div>
+        <select class="input filled">
+          <option>Food & Snacks</option>
+          <option>Fashion & Clothing</option>
+          <option>Beauty & Skincare</option>
+          <option>Electronics</option>
+        </select>
+      </div>
+      <div class="field">
+        <div class="label">Location / campus</div>
+        <input class="input filled" type="text" value="UI" />
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <div class="label">Currency code</div>
+          <input class="input filled" type="text" value="NGN" />
+        </div>
+        <div class="field">
+          <div class="label">Symbol</div>
+          <input class="input filled" type="text" value="₦" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: PRODUCTS -->
+  <div class="section" style="margin-top:10px;">
+    <div class="sec-head">
+      <span class="sec-icon">📦</span>
+      <span class="sec-title">Your products</span>
+      <span class="sec-step">2 of 3</span>
+    </div>
+    <div class="sec-body">
+      <div class="product-col-heads">
+        <div class="label">Name</div>
+        <div class="label">Price (₦)</div>
+        <div></div>
+      </div>
+      <div class="product-row">
+        <input class="input filled" type="text" value="Indomie" />
+        <input class="input filled" type="text" value="1,500" />
+        <button class="remove-btn">×</button>
+      </div>
+      <div class="product-row">
+        <input class="input filled" type="text" value="Egg sauce" />
+        <input class="input filled" type="text" value="800" />
+        <button class="remove-btn">×</button>
+      </div>
+      <div class="product-row">
+        <input class="input" type="text" placeholder="Product..." style="color:#B4B2A9;" />
+        <input class="input" type="text" placeholder="0" style="color:#B4B2A9;" />
+        <button class="remove-btn" style="opacity:0.4;">×</button>
+      </div>
+      <button class="add-btn">＋ Add product</button>
+    </div>
+  </div>
+
+  <!-- SECTION 3: DASHBOARD PIN -->
+  <div class="section" style="margin-top:10px;">
+    <div class="sec-head">
+      <span class="sec-icon">🔐</span>
+      <span class="sec-title">Dashboard access</span>
+      <span class="sec-step">3 of 3</span>
+    </div>
+    <div class="sec-body">
+      <div class="field">
+        <div class="label">Set your PIN (4 digits)</div>
+        <div class="pin-row">
+          <div class="pin-box pin-filled">•</div>
+          <div class="pin-box pin-filled">•</div>
+          <div class="pin-box pin-filled">•</div>
+          <div class="pin-box pin-filled">•</div>
+        </div>
+        <div class="input-hint" style="margin-top:8px;">Locks your private order dashboard. Don't forget it.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINI STORE PREVIEW -->
+  <div style="margin-top:24px;">
+    <div class="mp-label">Your store preview</div>
+    <div class="mini-preview">
+      <div class="mp-head">
+        <div class="mp-logo">OE</div>
+        <div>
+          <div class="mp-name">Olam's Enterprise</div>
+          <div class="mp-cat">FOOD & SNACKS · UI</div>
+        </div>
+      </div>
+      <div class="mp-body">
+        <div class="mp-section-t">Menu</div>
+        <div class="mp-item">
+          <span class="mp-item-name">Indomie</span>
+          <span class="mp-item-price">₦1,500</span>
+        </div>
+        <div class="mp-item">
+          <span class="mp-item-name">Egg sauce</span>
+          <span class="mp-item-price">₦800</span>
+        </div>
+        <button class="mp-order-btn">Order via WhatsApp</button>
+        <div class="mp-link">kioskk.me/olams-enterprise</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="cta-btn">✦ &nbsp;Generate my storefront</button>
+    <div class="cta-meta">
+      <div class="ai-pill">✦ AI</div>
+      ~15 seconds · Free forever
+    </div>
+  </div>
+</div>
