@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import { getDomain } from "@/lib/env";
 import { digitsOnly } from "@/lib/phone";
-import { slugifyBusinessName } from "@/lib/slug";
+import generateSlug from '../../../lib/slugify';
+import StorePreview from '../../../components/templates/StorePreview';
 
 const CATEGORIES = [
   "Groceries & Provisions",
@@ -27,6 +28,22 @@ type ItemDraft = {
   price: string;
 };
 
+type PreviewProduct = {
+  name: string;
+  price: number;
+};
+
+type PreviewData = {
+  storeName: string;
+  category: string;
+  location: string;
+  whatsappNumber: string;
+  currencySymbol: string;
+  products: PreviewProduct[];
+  tagline?: string;
+  templateId: string;
+};
+
 function createItemDraft(): ItemDraft {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return { id: crypto.randomUUID(), name: "", price: "" };
@@ -35,7 +52,8 @@ function createItemDraft(): ItemDraft {
 }
 
 function validatePrice(price: string): boolean {
-  const value = Number(price);
+  const cleaned = String(price).replace(/[^0-9.]/g, '');
+  const value = Number(cleaned);
   return Number.isFinite(value) && value > 0;
 }
 
@@ -52,18 +70,105 @@ export default function CreatePage() {
   const [currencySymbol, setCurrencySymbol] = useState("₦");
   const [items, setItems] = useState<ItemDraft[]>(() => [createItemDraft()]);
   const [pin, setPin] = useState("");
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handlePinChange = (idx: number, value: string) => {
+    const ch = value.replace(/[^0-9]/g, '').slice(-1);
+    setPin((p) => {
+      const arr = p.split('').slice(0, 4);
+      arr[idx] = ch;
+      return arr.join('');
+    });
+    if (ch && idx < 3) {
+      pinRefs.current[idx + 1]?.focus();
+    }
+  };
+
+  const handlePinKeyDown = (idx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !pin[idx] && idx > 0) {
+      pinRefs.current[idx - 1]?.focus();
+    }
+  };
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [shareLabel, setShareLabel] = useState("Share");
-
-  const slug = useMemo(() => slugifyBusinessName(businessName || ""), [businessName]);
+  const [slug, setSlug] = useState("");
+  const [templateId, setTemplateId] = useState('noir');
+  const [userSelectedTemplate, setUserSelectedTemplate] = useState(false);
 
   const shareableUrl = useMemo(() => {
     const base = /^https?:\/\//.test(domain) ? domain : `https://${domain}`;
     return `${base}/${slug || "your-store"}`;
   }, [domain, slug]);
 
-  const canSubmit = !!businessName && !!ownerName && /^\d{4,6}$/.test(pin) && items.length > 0 && items.every((it) => it.name && validatePrice(it.price));
+  const slugDebounceRef = useRef<number | null>(null);
+  const previewDebounceRef = useRef<number | null>(null);
+  const [previewData, setPreviewData] = useState<PreviewData>(() => ({
+    storeName: '',
+    category: '',
+    location: '',
+    whatsappNumber: '',
+    currencySymbol: '₦',
+    products: [],
+    templateId: 'noir',
+  }));
+
+  useEffect(() => {
+    // live slug generation with 300ms debounce
+    if (!businessName) {
+      setSlug('');
+      return;
+    }
+    if (slugDebounceRef.current) window.clearTimeout(slugDebounceRef.current);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    slugDebounceRef.current = window.setTimeout(async () => {
+      try {
+        const s = await generateSlug(businessName);
+        setSlug(s);
+      } catch {
+        setSlug('');
+      }
+    }, 300);
+    return () => { if (slugDebounceRef.current) window.clearTimeout(slugDebounceRef.current); };
+  }, [businessName]);
+
+  // Debounce preview updates (300ms)
+  useEffect(() => {
+    if (previewDebounceRef.current) window.clearTimeout(previewDebounceRef.current);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    previewDebounceRef.current = window.setTimeout(() => {
+      setPreviewData({
+        storeName: businessName || 'Your store',
+        category: category || 'Store',
+        location: location || '',
+        whatsappNumber: digitsOnly(whatsapp) || '',
+        currencySymbol: currencySymbol || '₦',
+        products: items.map((it) => ({ name: it.name || 'Product', price: Number(it.price) || 0 })),
+        templateId,
+      });
+    }, 300);
+    return () => { if (previewDebounceRef.current) window.clearTimeout(previewDebounceRef.current); };
+  }, [businessName, category, location, whatsapp, currencySymbol, items, templateId]);
+
+  const canSubmit = !!businessName && !!ownerName && /^\d{4}$/.test(pin) && items.length > 0 && items.every((it) => it.name && validatePrice(it.price));
+
+  // category -> suggested template mapping
+  const suggestionMap: Record<string, string> = {
+    'Food & Snacks': 'noir',
+    'Fashion & Clothing': 'cream',
+    'Skincare & Beauty': 'bold',
+    'Electronics & Accessories': 'minimal',
+    'Handmade & Jewellery': 'luxury',
+  };
+
+  useEffect(() => {
+    if (!userSelectedTemplate && category) {
+      const suggestion = suggestionMap[category] || 'minimal';
+      setTemplateId(suggestion);
+    }
+  }, [category, userSelectedTemplate]);
 
   async function submit(e?: React.FormEvent) {
     if (e) e.preventDefault();
@@ -74,7 +179,19 @@ export default function CreatePage() {
     }
     setLoading(true);
     try {
-      const payload = {
+      const payload: {
+        businessName: string;
+        ownerName: string;
+        whatsapp: string;
+        category: string;
+        location: string;
+        currency: string;
+        currencySymbol: string;
+        items: { name: string; price: number }[];
+        templateId: string;
+        tagline: string;
+        pin: string;
+      } = {
         businessName,
         ownerName,
         whatsapp: digitsOnly(whatsapp),
@@ -82,18 +199,33 @@ export default function CreatePage() {
         location,
         currency,
         currencySymbol,
-        items: items.map((it) => ({ name: it.name, price: Number(it.price) })),
-        pin,
+        items: items.map((it) => ({ name: it.name.trim(), price: Number(String(it.price).replace(/[^0-9.]/g, '')) })),
+        templateId,
+        tagline: `${(category || 'Other')} on ${location} campus`,
+        pin: '',
       };
+
+      // normalize and hash PIN with Web Crypto (SHA-256 hex)
+      const pinDigits = String(pin).replace(/[^0-9]/g, '').slice(0, 4);
+      if (!/^\d{4}$/.test(pinDigits)) {
+        throw new Error('PIN must be 4 digits.');
+      }
+      const enc = new TextEncoder();
+      const pinBytes = enc.encode(pinDigits);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', pinBytes);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      // attach hashed pin and computed tagline if none
+      payload.pin = hashHex;
 
       const res = await fetch(`/api/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to create store");
-      const resultingSlug = data.slug;
+      const responseData = await res.json();
+      if (!res.ok) throw new Error(responseData?.error || "Failed to create store");
+      const resultingSlug = responseData.slug;
       if (resultingSlug) router.push(`/${resultingSlug}`);
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);
@@ -200,20 +332,32 @@ export default function CreatePage() {
           </div>
 
           <div className="card">
-            <div style={{ fontWeight: 700, marginBottom: 8 }}>Dashboard access</div>
-            <div style={{ marginBottom: 8, color: '#888780' }}>Set a 4-digit PIN for your private dashboard.</div>
-            <div className="pin-row">
-              {[0,1,2,3].map((idx) => (
-                <input key={idx} inputMode="numeric" maxLength={1} value={pin[idx] ?? ''} onChange={(e) => {
-                  const ch = e.target.value.replace(/[^0-9]/g,'').slice(-1);
-                  setPin((p) => {
-                    const arr = p.split('').slice(0,4);
-                    arr[idx] = ch;
-                    return arr.join('');
-                  });
-                }} className={`pin-box`} style={{ textAlign: 'center' }} />
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>Choose a template</div>
+            <div style={{ marginBottom: 8, color: '#888780' }}>Pick a look for your store. We suggest one based on your category.</div>
+            <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 6 }}>
+              {[
+                { id: 'noir', name: 'Noir', desc: 'Dark & bold' },
+                { id: 'cream', name: 'Cream', desc: 'Warm & editorial' },
+                { id: 'minimal', name: 'Minimal', desc: 'Clean & simple' },
+                { id: 'bold', name: 'Bold', desc: 'Vibrant & loud' },
+                { id: 'luxury', name: 'Luxury', desc: 'Premium & quiet' },
+              ].map((t) => (
+                <button key={t.id} type="button" onClick={() => { setTemplateId(t.id); setUserSelectedTemplate(true); }} className="template-card" style={{ minWidth: 120, padding: 12, borderRadius: 8, border: templateId === t.id ? '2px solid #000' : '1px solid rgba(0,0,0,0.06)', background: '#fff' }}>
+                  <div style={{ fontWeight: 700 }}>{t.name}</div>
+                  <div style={{ fontSize: 12, color: '#666' }}>{t.desc}</div>
+                </button>
               ))}
             </div>
+          </div>
+
+          <div className="card">
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>Dashboard access</div>
+            <div style={{ marginBottom: 8, color: '#888780' }}>Set a 4-digit PIN for your private dashboard.</div>
+<div className="pin-row">
+               {[0,1,2,3].map((idx) => (
+                 <input key={idx} ref={el => { pinRefs.current[idx] = el; }} inputMode="numeric" maxLength={1} value={pin[idx] ?? ''} onChange={(e) => handlePinChange(idx, e.target.value)} onKeyDown={(e) => handlePinKeyDown(idx, e)} className={`pin-box`} style={{ textAlign: 'center' }} />
+               ))}
+             </div>
           </div>
 
           {error && <div style={{ margin: 12, color: 'red', background: '#fff', padding: 12, borderRadius: 10 }}>{error}</div>}
@@ -225,32 +369,17 @@ export default function CreatePage() {
           </section>
 
           <aside className="mini-preview">
-            <div className="mp-head">
-              <div className="mp-logo">{(businessName && businessName[0]?.toUpperCase()) || 'KK'}</div>
-              <div>
-                <div style={{ fontWeight: 700 }}>{businessName || "Your store"}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)' }}>{(category || '').toUpperCase()} · {location}</div>
-              </div>
-            </div>
-            <div className="mp-body">
-              <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: '.08em', marginBottom: 8, color: '#B4B2A9' }}>Menu</div>
-              {items.filter(it=>it.name).map((it, idx) => (
-                <div key={idx} className="mp-item"><div style={{fontWeight:500}}>{it.name}</div><div>{currencySymbol}{it.price}</div></div>
-              ))}
-              <button
-                className="mp-order-btn"
-                onClick={() => {
-                  const storeUrl = `${window.location.origin}/${slug || 'your-store'}`;
-                  const message = `Hi! I'd like to place an order from ${businessName}. Check it out: ${storeUrl}`;
-                  const encodedMessage = encodeURIComponent(message);
-                  const whatsappPhone = digitsOnly(whatsapp);
-                  if (whatsappPhone) {
-                    window.open(`https://wa.me/${whatsappPhone}?text=${encodedMessage}`, '_blank');
-                  }
-                }}
-              >
-                Order via WhatsApp
-              </button>
+            <div style={{padding:12}}>
+              <StorePreview
+                templateId={previewData.templateId}
+                storeName={previewData.storeName}
+                category={previewData.category}
+                location={previewData.location}
+                whatsappNumber={previewData.whatsappNumber}
+                currencySymbol={previewData.currencySymbol}
+                tagline={previewData.tagline}
+                products={previewData.products}
+              />
               <div style={{ textAlign: 'center', marginTop: 8, color: '#B4B2A9', fontSize: 12 }}>{domain}/{slug || 'your-store'}</div>
             </div>
           </aside>

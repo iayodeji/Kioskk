@@ -1,0 +1,150 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{margin:0;background:#2a2520;}
+  .phone{width:375px;margin:0 auto;background:#FAF8F5;min-height:100vh;font-family:'Inter',sans-serif;color:#1a1a18;}
+
+  /* TOP BAR */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:0.5px solid rgba(0,0,0,0.06);}
+  .store-wordmark{font-family:'DM Serif Display',serif;font-size:20px;color:#1a1a18;letter-spacing:0.5px;}
+  .topbar-right{display:flex;align-items:center;gap:10px;}
+  .live-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#888;border:0.5px solid rgba(0,0,0,0.1);padding:4px 9px;border-radius:100px;}
+  .live-dot{width:5px;height:5px;border-radius:50%;background:#4CAF50;}
+  .chat-lnk{font-size:11px;color:#1a1a18;font-weight:500;text-decoration:underline;text-underline-offset:2px;}
+
+  /* FULL BLEED HERO */
+  .hero{background:#1a1a18;padding:40px 22px 36px;position:relative;overflow:hidden;}
+  .hero::before{content:'"';position:absolute;right:10px;top:-20px;font-family:'DM Serif Display',serif;font-size:180px;color:rgba(255,255,255,0.03);line-height:1;}
+  .hero-cat{font-size:9px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:16px;}
+  .hero-h{font-family:'DM Serif Display',serif;font-size:38px;font-weight:400;color:#FAF8F5;line-height:1.05;letter-spacing:-0.5px;margin-bottom:14px;}
+  .hero-h em{font-style:italic;color:rgba(200,75,47,0.9);}
+  .hero-divider{width:32px;height:0.5px;background:rgba(255,255,255,0.15);margin-bottom:14px;}
+  .hero-sub{font-size:12px;color:rgba(255,255,255,0.35);line-height:1.7;letter-spacing:0.2px;}
+
+  /* FEATURED PRODUCT - overlapping the hero */
+  .featured-wrap{padding:0 22px;margin-top:-1px;}
+  .feat-card{background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:0 0 16px 16px;padding:20px;}
+  .feat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+  .feat-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#C84B2F;font-weight:500;}
+  .feat-price{font-family:'DM Serif Display',serif;font-size:26px;color:#1a1a18;}
+  .feat-name{font-size:17px;font-weight:500;color:#1a1a18;letter-spacing:-0.4px;margin-bottom:4px;}
+  .feat-desc{font-size:12px;color:#888;line-height:1.6;margin-bottom:16px;}
+  .feat-btn{width:100%;height:44px;background:#1a1a18;border:none;border-radius:10px;color:#FAF8F5;font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:-0.1px;}
+
+  /* PRODUCT LIST - editorial style */
+  .prod-section{padding:28px 22px 0;}
+  .prod-section-label{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#B8B0A4;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+  .prod-section-label::after{content:'';flex:1;height:0.5px;background:rgba(0,0,0,0.08);}
+
+  .prod-editorial{display:flex;align-items:baseline;justify-content:space-between;padding:16px 0;border-bottom:0.5px solid rgba(0,0,0,0.06);cursor:pointer;}
+  .prod-editorial:last-child{border-bottom:none;}
+  .prod-ed-left{flex:1;}
+  .prod-ed-name{font-family:'DM Serif Display',serif;font-size:18px;color:#1a1a18;letter-spacing:-0.2px;margin-bottom:2px;}
+  .prod-ed-desc{font-size:11px;color:#B8B0A4;letter-spacing:0.2px;}
+  .prod-ed-right{display:flex;align-items:center;gap:12px;flex-shrink:0;}
+  .prod-ed-price{font-size:15px;font-weight:500;color:#1a1a18;letter-spacing:-0.4px;}
+  .prod-ed-arrow{font-size:16px;color:#D0C8C0;}
+
+  /* QUOTE / TRUST */
+  .trust{margin:24px 22px;background:#F2EDE8;border-radius:14px;padding:20px;}
+  .trust-quote{font-family:'DM Serif Display',serif;font-size:16px;font-style:italic;color:#1a1a18;line-height:1.5;margin-bottom:8px;}
+  .trust-attr{font-size:10px;color:#B8B0A4;letter-spacing:0.5px;}
+
+  /* CTA */
+  .cta{padding:4px 22px 32px;}
+  .cta-btn{width:100%;height:50px;background:#1a1a18;border:none;border-radius:12px;color:#FAF8F5;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:-0.2px;}
+  .cta-sub{text-align:center;margin-top:10px;font-size:11px;color:#B8B0A4;letter-spacing:0.3px;}
+
+  .footer{padding:12px 22px 24px;display:flex;justify-content:space-between;border-top:0.5px solid rgba(0,0,0,0.06);}
+  .foot-l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:#C8C0B8;}
+  .foot-r{font-size:9px;color:rgba(200,75,47,0.4);letter-spacing:1px;text-transform:uppercase;}
+</style>
+
+<div class="phone">
+  <div class="topbar">
+    <div class="store-wordmark">Adaeze</div>
+    <div class="topbar-right">
+      <div class="live-badge"><div class="live-dot"></div>Open</div>
+      <div class="chat-lnk">Chat</div>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-cat">Handmade · Jewellery · Accessories</div>
+    <h1 class="hero-h">Made with<br><em>intention.</em><br>Worn with pride.</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-sub">Each piece handcrafted in Lagos. Shipped across Nigeria.</p>
+  </div>
+
+  <div class="featured-wrap">
+    <div class="feat-card">
+      <div class="feat-top">
+        <div class="feat-label">✦ &nbsp;Featured piece</div>
+        <div class="feat-price">₦8,500</div>
+      </div>
+      <div class="feat-name">Cowrie shell necklace</div>
+      <div class="feat-desc">Hand-strung on gold-filled chain. One size. Ships in 24h.</div>
+      <button class="feat-btn">Order on WhatsApp</button>
+    </div>
+  </div>
+
+  <div class="prod-section">
+    <div class="prod-section-label">All pieces</div>
+    <div class="prod-editorial">
+      <div class="prod-ed-left">
+        <div class="prod-ed-name">Ankara bead bracelet</div>
+        <div class="prod-ed-desc">Handmade · 3 colourways</div>
+      </div>
+      <div class="prod-ed-right">
+        <div class="prod-ed-price">₦3,200</div>
+        <div class="prod-ed-arrow">→</div>
+      </div>
+    </div>
+    <div class="prod-editorial">
+      <div class="prod-ed-left">
+        <div class="prod-ed-name">Gold hoop earrings</div>
+        <div class="prod-ed-desc">18k gold-filled · Hypoallergenic</div>
+      </div>
+      <div class="prod-ed-right">
+        <div class="prod-ed-price">₦5,000</div>
+        <div class="prod-ed-arrow">→</div>
+      </div>
+    </div>
+    <div class="prod-editorial">
+      <div class="prod-ed-left">
+        <div class="prod-ed-name">Waist beads set</div>
+        <div class="prod-ed-desc">Custom sizing · 5 colours</div>
+      </div>
+      <div class="prod-ed-right">
+        <div class="prod-ed-price">₦4,000</div>
+        <div class="prod-ed-arrow">→</div>
+      </div>
+    </div>
+    <div class="prod-editorial">
+      <div class="prod-ed-left">
+        <div class="prod-ed-name">Resin ring set</div>
+        <div class="prod-ed-desc">Set of 3 · Mixed sizes</div>
+      </div>
+      <div class="prod-ed-right">
+        <div class="prod-ed-price">₦2,800</div>
+        <div class="prod-ed-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trust">
+    <div class="trust-quote">"I wore the cowrie necklace to my convocation and got stopped 6 times."</div>
+    <div class="trust-attr">— Chisom, UNN · Verified buyer</div>
+  </div>
+
+  <div class="cta">
+    <button class="cta-btn">💬 Order on WhatsApp</button>
+    <div class="cta-sub">Handmade to order · Ships in 24–48h</div>
+  </div>
+
+  <div class="footer">
+    <div class="foot-l">Powered by kioskk</div>
+    <div class="foot-r">kioskk.me</div>
+  </div>
+</div>
