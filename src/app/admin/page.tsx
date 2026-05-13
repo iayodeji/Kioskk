@@ -67,9 +67,7 @@ export default function AdminPage() {
       <header className="sticky top-0 z-10 border-b border-[var(--kk-border)] bg-white/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-xl bg-[var(--kk-accent)] text-[11px] font-extrabold text-white">
-              KK
-            </div>
+            <img className="brand-logo brand-logo--compact" src="/kioskk-logo.svg" alt="kioskk.me" />
             <div>
               <div className="font-[var(--font-serif)] text-[16px] font-bold leading-tight">
                 kioskk.me admin

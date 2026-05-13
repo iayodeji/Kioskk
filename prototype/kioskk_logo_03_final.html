@@ -1,0 +1,133 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Inter:wght@400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{margin:0;}
+  .r{font-family:'Inter',sans-serif;background:#F7F5F2;min-height:100vh;padding:28px 20px;}
+  .section-label{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:#B4B2A9;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .section-label::after{content:'';flex:1;height:0.5px;background:rgba(0,0,0,0.08);}
+  .card{background:#fff;border:0.5px solid rgba(0,0,0,0.08);border-radius:16px;padding:28px;margin-bottom:16px;}
+  .card.dark{background:#1a1a18;}
+  .card.brand{background:#C84B2F;}
+  .flex-center{display:flex;align-items:center;justify-content:center;padding:12px 0;}
+  .note{font-size:11px;color:#B4B2A9;line-height:1.6;margin-top:14px;padding-top:12px;border-top:0.5px solid rgba(0,0,0,0.06);}
+  .variants-row{display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+  .export-steps{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
+  .step-row{display:flex;gap:12px;align-items:flex-start;}
+  .step-n{width:22px;height:22px;border-radius:50%;background:#1a1a18;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+  .step-text{font-size:12px;color:#444441;line-height:1.6;}
+  .step-text strong{color:#1a1a18;font-weight:500;}
+  .copy-box{background:#F2F0EC;border-radius:8px;padding:10px 12px;font-size:11px;font-family:'SF Mono','Fira Code',monospace;color:#5F5E5A;margin-top:6px;line-height:1.7;word-break:break-all;}
+  .btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;background:#1a1a18;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;margin-top:10px;}
+</style>
+
+<div class="r">
+
+  <!-- PRIMARY LOGO: LIGHT BG -->
+  <div class="section-label">Primary · Light background</div>
+  <div class="card">
+    <div class="flex-center" style="padding:20px 0;">
+      <svg width="200" height="52" viewBox="0 0 200 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="13" fill="#F5F0EB"/>
+        <circle cx="26" cy="26" r="13" stroke="#1a1a18" stroke-width="3" stroke-linecap="round" stroke-dasharray="56 27"/>
+        <line x1="19.5" y1="32.5" x2="32" y2="20" stroke="#C84B2F" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="25.5,20 32,20 32,26.5" fill="none" stroke="#C84B2F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="66" y="33" font-family="'DM Sans', sans-serif" font-size="25" font-weight="500" fill="#1a1a18" letter-spacing="-1.2">kioskk</text>
+        <text x="67" y="46" font-family="'Inter', sans-serif" font-size="8.5" font-weight="400" fill="#B4B2A9" letter-spacing="2">.me</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- PRIMARY LOGO: DARK BG -->
+  <div class="section-label">Primary · Dark background</div>
+  <div class="card dark">
+    <div class="flex-center" style="padding:20px 0;">
+      <svg width="200" height="52" viewBox="0 0 200 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="52" height="52" rx="13" fill="rgba(255,255,255,0.08)"/>
+        <circle cx="26" cy="26" r="13" stroke="rgba(255,255,255,0.85)" stroke-width="3" stroke-linecap="round" stroke-dasharray="56 27"/>
+        <line x1="19.5" y1="32.5" x2="32" y2="20" stroke="#FF6B47" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="25.5,20 32,20 32,26.5" fill="none" stroke="#FF6B47" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="66" y="33" font-family="'DM Sans', sans-serif" font-size="25" font-weight="500" fill="#FAFAF8" letter-spacing="-1.2">kioskk</text>
+        <text x="67" y="46" font-family="'Inter', sans-serif" font-size="8.5" font-weight="400" fill="rgba(255,255,255,0.3)" letter-spacing="2">.me</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ICON ONLY VARIANTS -->
+  <div class="section-label">Icon only · All variants</div>
+  <div class="card">
+    <div class="variants-row">
+      <!-- Light -->
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="13" fill="#F5F0EB"/>
+        <circle cx="26" cy="26" r="13" stroke="#1a1a18" stroke-width="3" stroke-linecap="round" stroke-dasharray="56 27"/>
+        <line x1="19.5" y1="32.5" x2="32" y2="20" stroke="#C84B2F" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="25.5,20 32,20 32,26.5" fill="none" stroke="#C84B2F" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <!-- Dark -->
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="13" fill="#1a1a18"/>
+        <circle cx="26" cy="26" r="13" stroke="rgba(255,255,255,0.85)" stroke-width="3" stroke-linecap="round" stroke-dasharray="56 27"/>
+        <line x1="19.5" y1="32.5" x2="32" y2="20" stroke="#FF6B47" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="25.5,20 32,20 32,26.5" fill="none" stroke="#FF6B47" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <!-- Brand red -->
+      <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+        <rect width="52" height="52" rx="13" fill="#C84B2F"/>
+        <circle cx="26" cy="26" r="13" stroke="rgba(255,255,255,0.9)" stroke-width="3" stroke-linecap="round" stroke-dasharray="56 27"/>
+        <line x1="19.5" y1="32.5" x2="32" y2="20" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <polyline points="25.5,20 32,20 32,26.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <!-- Small favicon size -->
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect width="32" height="32" rx="8" fill="#1a1a18"/>
+        <circle cx="16" cy="16" r="8" stroke="rgba(255,255,255,0.85)" stroke-width="2" stroke-linecap="round" stroke-dasharray="34 17"/>
+        <line x1="12" y1="20" x2="20" y2="12" stroke="#FF6B47" stroke-width="2" stroke-linecap="round"/>
+        <polyline points="16,12 20,12 20,16" fill="none" stroke="#FF6B47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <!-- Tiny 16px favicon -->
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <rect width="16" height="16" rx="4" fill="#1a1a18"/>
+        <line x1="5.5" y1="11" x2="11" y2="5.5" stroke="#FF6B47" stroke-width="1.8" stroke-linecap="round"/>
+        <polyline points="8,5.5 11,5.5 11,8.5" fill="none" stroke="#FF6B47" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="note">Left to right: cream bg · dark bg · brand red · 32px · 16px favicon</div>
+  </div>
+
+  <!-- HOW TO EXPORT -->
+  <div class="section-label">How to export & use</div>
+  <div class="card">
+    <div class="export-steps">
+      <div class="step-row">
+        <div class="step-n">1</div>
+        <div class="step-text"><strong>Right-click this widget → Inspect Element</strong><br>In your browser DevTools, find the <code style="background:#F2F0EC;padding:1px 5px;border-radius:4px;">&lt;svg&gt;</code> tag for whichever logo you want. Right-click it → Copy → Copy outerHTML.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">2</div>
+        <div class="step-text"><strong>Paste into a .svg file</strong><br>Open any text editor (even Notepad), paste the SVG code, save as <code style="background:#F2F0EC;padding:1px 5px;border-radius:4px;">kioskk-logo.svg</code>. That's your vector file — infinitely scalable, zero quality loss.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">3</div>
+        <div class="step-text"><strong>For PNG (profile pics, app icons)</strong><br>Open the .svg in Chrome → right-click → Save as image. Or drop it into <strong>Figma</strong> (free) and export at 1×, 2×, 3× for retina screens.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">4</div>
+        <div class="step-text"><strong>On your website</strong><br>Drop the SVG inline in your HTML nav, or reference it as an <code style="background:#F2F0EC;padding:1px 5px;border-radius:4px;">&lt;img src="logo.svg"&gt;</code>. SVG in the nav means it's crisp on every screen, loads instantly, no HTTP request needed if inline.</div>
+      </div>
+      <div class="step-row">
+        <div class="step-n">5</div>
+        <div class="step-text"><strong>For your agency</strong><br>Send them the .svg file + this color palette:</div>
+      </div>
+    </div>
+    <div class="copy-box">
+      Primary dark:   #1a1a18<br>
+      Brand red:      #C84B2F<br>
+      Accent red:     #FF6B47  (on dark bgs)<br>
+      Warm cream:     #F5F0EB  (icon bg)<br>
+      Page bg:        #FAFAF8<br>
+      Font:           DM Sans (wordmark) · Inter (UI)
+    </div>
+  </div>
+
+</div>

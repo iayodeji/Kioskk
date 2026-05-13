@@ -6,8 +6,7 @@ export default function Home() {
       <div className="r">
         <nav className="nav">
           <div className="logo">
-            <div className="lm">KK</div>
-            <span className="lt">kioskk.me</span>
+            <img className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" />
           </div>
           <Link className="nav-cta" href="/create">Create your store →</Link>
         </nav>
@@ -146,23 +145,16 @@ export default function Home() {
 
         <div className="cta-section">
           <div className="cta-box">
-            <div className="cta-h">
-              Your business deserves<br />
-              better than a <em>WhatsApp thread.</em><br />
-              <strong>Start free. Right now.</strong>
-            </div>
-            <p className="cta-sub">No downloads. No credit card. No technical knowledge required.<br />Just your business, live on the internet in 60 seconds.</p>
+            <p className="cta-line"><strong>Launch your store in 60 seconds.</strong> One clean link for products, orders, and invoices.</p>
             <Link className="cta-btn" href="/create">Build my store <i className="ti ti-arrow-right" style={{ fontSize: 15 }} aria-hidden="true" /></Link>
-            <div className="cta-meta">Free forever for your first store · kioskk.me</div>
           </div>
         </div>
 
         <footer className="footer">
           <div className="logo">
-            <div className="lm">KK</div>
-            <span className="lt">kioskk.me</span>
+            <img className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" />
           </div>
-          <div className="foot-tag">YOUR STORE IN 60 SECONDS</div>
+          <div className="foot-tag">© 2026 kioskk.me</div>
           <div className="foot-txt">Built for Africa&#39;s next million vendors.</div>
         </footer>
       </div>
