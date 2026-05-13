@@ -129,7 +129,6 @@ export default function CreatePage() {
           <div className="logo">
             <img className="brand-logo brand-logo--compact" src="/kioskk-logo.svg" alt="kioskk.me" />
           </div>
-          <div style={{ fontSize: 11, color: '#B4B2A9', background: '#EEECEA', padding: '6px 10px', borderRadius: 999 }}>✦ AI</div>
         </nav>
 
         <div className="create-shell">

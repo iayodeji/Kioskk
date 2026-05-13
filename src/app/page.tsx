@@ -1,6 +1,30 @@
 import Link from "next/link";
 
 export default function Home() {
+  const stats = [
+    { number: "60s", label: "to go live" },
+    { number: "0 apps", label: "to download" },
+    { number: "₦0", label: "to start" },
+    { number: "1 link", label: "shares everything" },
+  ];
+  const testimonials = [
+    {
+      name: "Amara O.",
+      business: "Food vendor · UI campus",
+      text: "I used to wake up to 30 unread messages. Now I wake up to orders. Big difference.",
+    },
+    {
+      name: "Seun A.",
+      business: "Accessories · UNILAG",
+      text: "My customers take me more seriously now. I have an actual store, not just a WhatsApp number.",
+    },
+    {
+      name: "Kemi B.",
+      business: "Thrift & fashion · OAU",
+      text: "Set it up in the library between classes. By evening I had my first order through the link.",
+    },
+  ];
+
   return (
     <>
       <div className="r">
@@ -12,7 +36,7 @@ export default function Home() {
         </nav>
 
         <div className="hero">
-          <div className="eyebrow"><div className="eline" />Built for student vendors<div className="eline" /></div>
+          <div className="eyebrow"><div className="eline" />Built for vendors<div className="eline" /></div>
           <h1 className="h1">
             Stop managing your<br />
             business <em>by hand.</em><br />
@@ -27,26 +51,32 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ maxWidth: 860, margin: "0 auto", padding: "0 48px" }}>
-          <div className="stat-row">
-            <div className="stat">
-              <div className="stat-n">60s</div>
-              <div className="stat-l">to go live</div>
-            </div>
-            <div className="stat-div" />
-            <div className="stat">
-              <div className="stat-n">0 apps</div>
-              <div className="stat-l">to download</div>
-            </div>
-            <div className="stat-div" />
-            <div className="stat">
-              <div className="stat-n">₦0</div>
-              <div className="stat-l">to start</div>
-            </div>
-            <div className="stat-div" />
-            <div className="stat">
-              <div className="stat-n">1 link</div>
-              <div className="stat-l">shares everything</div>
+        <div className="stats-wrap">
+          <div className="stats-marquee">
+            <div className="stats-track">
+              <div className="stat-row">
+                {stats.map((item, index) => (
+                  <div className="stat-unit" key={`primary-${item.number}`}>
+                    <div className="stat">
+                      <div className="stat-n">{item.number}</div>
+                      <div className="stat-l">{item.label}</div>
+                    </div>
+                    {index < stats.length - 1 ? <div className="stat-div" /> : null}
+                  </div>
+                ))}
+              </div>
+
+              <div className="stat-row stat-row--dup" aria-hidden="true">
+                {stats.map((item, index) => (
+                  <div className="stat-unit" key={`copy-${item.number}`}>
+                    <div className="stat">
+                      <div className="stat-n">{item.number}</div>
+                      <div className="stat-l">{item.label}</div>
+                    </div>
+                    {index < stats.length - 1 ? <div className="stat-div" /> : null}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -124,21 +154,25 @@ export default function Home() {
           <div className="section-head">
             <div className="section-label">Real vendors. Real results.</div>
           </div>
-          <div className="proof-grid">
-            <div className="proof-card">
-              <div className="proof-name">Amara O.</div>
-              <div className="proof-biz">Food vendor · UI campus</div>
-              <div className="proof-text">I used to wake up to 30 unread messages. Now I wake up to orders. Big difference.</div>
+          <div className="proof-track">
+            <div className="proof-grid">
+              {testimonials.map((item) => (
+                <div className="proof-card" key={`primary-${item.name}`}>
+                  <div className="proof-name">{item.name}</div>
+                  <div className="proof-biz">{item.business}</div>
+                  <div className="proof-text">{item.text}</div>
+                </div>
+              ))}
             </div>
-            <div className="proof-card">
-              <div className="proof-name">Seun A.</div>
-              <div className="proof-biz">Accessories · UNILAG</div>
-              <div className="proof-text">My customers take me more seriously now. I have an actual store, not just a WhatsApp number.</div>
-            </div>
-            <div className="proof-card">
-              <div className="proof-name">Kemi B.</div>
-              <div className="proof-biz">Thrift & fashion · OAU</div>
-              <div className="proof-text">Set it up in the library between classes. By evening I had my first order through the link.</div>
+
+            <div className="proof-grid proof-grid--dup" aria-hidden="true">
+              {testimonials.map((item) => (
+                <div className="proof-card" key={`copy-${item.name}`}>
+                  <div className="proof-name">{item.name}</div>
+                  <div className="proof-biz">{item.business}</div>
+                  <div className="proof-text">{item.text}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
