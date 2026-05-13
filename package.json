@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "mcp": "powershell -ExecutionPolicy Bypass -File ./scripts/mcp.ps1"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.2.8",

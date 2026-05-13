@@ -201,7 +201,20 @@ export default function CreatePage() {
             {items.filter(it=>it.name).map((it, idx) => (
               <div key={idx} className="mp-item"><div style={{fontWeight:500}}>{it.name}</div><div>{currencySymbol}{it.price}</div></div>
             ))}
-            <button className="mp-order-btn">Order via WhatsApp</button>
+            <button 
+              className="mp-order-btn" 
+              onClick={() => {
+                const storeUrl = `${window.location.origin}/${slug || 'your-store'}`;
+                const message = `Hi! I'd like to place an order from ${businessName}. Check it out: ${storeUrl}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappPhone = digitsOnly(whatsapp);
+                if (whatsappPhone) {
+                  window.open(`https://wa.me/${whatsappPhone}?text=${encodedMessage}`, '_blank');
+                }
+              }}
+            >
+              Order via WhatsApp
+            </button>
             <div style={{ textAlign: 'center', marginTop: 8, color: '#B4B2A9', fontSize: 12 }}>{domain}/{slug || 'your-store'}</div>
           </div>
         </div>
