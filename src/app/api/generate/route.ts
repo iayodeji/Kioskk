@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-import { generateAiConfig } from "@/lib/ai/claude";
-import { createServerSupabase } from "@/lib/supabase/server";
+import { createServerSupabase } from '../../../../lib/supabase';
 import { slugifyBusinessName } from "@/lib/slug";
 
 const requestSchema = z.object({
@@ -15,17 +13,10 @@ const requestSchema = z.object({
   currency: z.string().min(1),
   currencySymbol: z.string().min(1),
   items: z.array(z.object({ name: z.string().min(1), price: z.number().positive() })).min(1),
-  pin: z.string().regex(/^\d{4,6}$/),
+  pin: z.string().regex(/^[0-9a-f]{64}$/),
+  templateId: z.string().optional(),
+  tagline: z.string().optional(),
 });
-
-function withSlugSuffix(base: string, attempt: number) {
-  if (attempt === 0) return base;
-  const rand = crypto.getRandomValues(new Uint8Array(2));
-  const hex = Array.from(rand)
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return `${base}-${hex}`;
-}
 
 export async function POST(req: Request) {
   try {
@@ -37,32 +28,26 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Business name must contain letters or numbers." }, { status: 400 });
     }
 
-    const aiConfig = await generateAiConfig({
-      businessName: parsed.businessName,
-      ownerName: parsed.ownerName,
-      category: parsed.category,
-      location: parsed.location,
-      currencySymbol: parsed.currencySymbol,
-      items: parsed.items,
-    });
-
-    const pinHash = await bcrypt.hash(parsed.pin, 10);
+    const pinHash = parsed.pin;
     const supabase = createServerSupabase();
 
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const slug = withSlugSuffix(baseSlug, attempt);
-      const { error } = await supabase.from("businesses").insert({
+    // Try base, then append -2, -3 on conflicts
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const slug = attempt === 0 ? baseSlug : `${baseSlug}-${attempt + 1}`;
+      const tagline = parsed.tagline && parsed.tagline.length ? parsed.tagline : `${parsed.category} on ${parsed.location} campus`;
+      const { error } = await supabase.from("stores").insert({
         slug,
-        business_name: parsed.businessName,
+        store_name: parsed.businessName,
         owner_name: parsed.ownerName,
-        whatsapp: parsed.whatsapp,
+        whatsapp_number: parsed.whatsapp,
         category: parsed.category,
         location: parsed.location,
-        currency: parsed.currency,
         currency_symbol: parsed.currencySymbol,
-        pin_hash: pinHash,
-        items: parsed.items,
-        ai_config: aiConfig,
+        currency_code: parsed.currency,
+        template_id: parsed.templateId || 'noir',
+        tagline,
+        dashboard_pin: pinHash,
+        products: parsed.items,
       });
 
       if (!error) return NextResponse.json({ slug });

@@ -5,19 +5,25 @@ import { useSearchParams } from "next/navigation";
 
 import { digitsOnly } from "@/lib/phone";
 import { getDomain } from "@/lib/env";
+import { TemplateBold, TemplateCream, TemplateLuxury, TemplateMinimal, TemplateNoir } from "../../../components/templates";
 
 type Business = {
   id: string;
   slug: string;
-  business_name: string;
+  business_name?: string;
+  store_name?: string;
   owner_name: string;
-  whatsapp: string;
+  whatsapp?: string;
+  whatsapp_number?: string;
   category: string;
   location: string;
-  currency: string;
+  currency?: string;
+  currency_code?: string;
   currency_symbol: string;
-  items: unknown;
-  ai_config: unknown;
+  tagline?: string;
+  items?: unknown;
+  products?: unknown;
+  ai_config?: unknown;
 };
 
 type MenuItem = { name: string; price: number };
@@ -69,20 +75,20 @@ function formatMoney(amount: number, symbol: string) {
   return `${symbol}${n.toLocaleString()}`;
 }
 
-function fillWhatsAppTemplate(
-  template: string,
-  data: { orderId: string; name: string; items: string; total: string; hostel: string },
-) {
-  return template
-    .replaceAll("{{orderId}}", data.orderId)
-    .replaceAll("{{name}}", data.name)
-    .replaceAll("{{items}}", data.items)
-    .replaceAll("{{total}}", data.total)
-    .replaceAll("{{hostel}}", data.hostel);
-}
-
-function waLink(phone: string, message: string) {
-  return `https://wa.me/${digitsOnly(phone)}?text=${encodeURIComponent(message)}`;
+function getTemplateComponent(templateId: string) {
+  switch ((templateId || "").toLowerCase()) {
+    case "cream":
+      return TemplateCream;
+    case "minimal":
+      return TemplateMinimal;
+    case "bold":
+      return TemplateBold;
+    case "luxury":
+      return TemplateLuxury;
+    case "noir":
+    default:
+      return TemplateNoir;
+  }
 }
 
 function StatusPill({ status }: { status: OrderRow["status"] }) {
@@ -149,6 +155,18 @@ function GhostButton({
 export default function StoreApp({ business }: { business: Business }) {
   const searchParams = useSearchParams();
   const domain = useMemo(() => getDomain(), []);
+  const storeName = business.store_name ?? business.business_name ?? 'Store';
+  const whatsapp = business.whatsapp_number ?? business.whatsapp ?? '';
+  const selectedTemplateId = String((business as { template_id?: string }).template_id || 'noir');
+  const [view, setView] = useState<"store" | "dashboard">("store");
+  const [cart] = useState<Record<string, number>>({});
+
+  const [pin, setPin] = useState("");
+  const [ownerToken, setOwnerToken] = useState<string | null>(null);
+  const [orders, setOrders] = useState<OrderRow[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [dashError, setDashError] = useState<string | null>(null);
+  const [orderSuccess] = useState(false);
 
   const config: AiConfig = useMemo(() => {
     if (isAiConfig(business.ai_config)) return business.ai_config;
@@ -173,31 +191,22 @@ export default function StoreApp({ business }: { business: Business }) {
   }, [business.ai_config]);
 
   const menu: MenuItem[] = useMemo(() => {
-    const raw = Array.isArray(business.items) ? business.items : [];
+    const raw = Array.isArray(business.products) ? business.products : Array.isArray(business.items) ? business.items : [];
     return raw.filter(isMenuItem);
-  }, [business.items]);
+  }, [business.products, business.items]);
 
-  const [view, setView] = useState<"store" | "dashboard">("store");
-  const [cart, setCart] = useState<Record<string, number>>({});
+  const TemplateComponent = useMemo(() => getTemplateComponent(selectedTemplateId), [selectedTemplateId]);
 
-  const [checkoutName, setCheckoutName] = useState("");
-  const [checkoutPhone, setCheckoutPhone] = useState("");
-  const [checkoutAddress, setCheckoutAddress] = useState("");
-  const [checkoutNotes, setCheckoutNotes] = useState("");
-
-  const [placing, setPlacing] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState<{
-    orderRef: string;
-    total: number;
-    waUrl: string;
-  } | null>(null);
-  const [storeError, setStoreError] = useState<string | null>(null);
-
-  const [pin, setPin] = useState("");
-  const [ownerToken, setOwnerToken] = useState<string | null>(null);
-  const [orders, setOrders] = useState<OrderRow[]>([]);
-  const [loadingOrders, setLoadingOrders] = useState(false);
-  const [dashError, setDashError] = useState<string | null>(null);
+  const templateProducts = useMemo(
+    () =>
+      menu.map((item, index) => ({
+        name: item.name,
+        price: item.price,
+        description: index === 0 ? `Featured ${business.category.toLowerCase()} item` : "",
+        featured: index === 0,
+      })),
+    [business.category, menu],
+  );
 
   useEffect(() => {
     const initialView = searchParams.get("view");
@@ -236,76 +245,6 @@ export default function StoreApp({ business }: { business: Business }) {
       else url.searchParams.delete("view");
       window.history.replaceState({}, "", `${url.pathname}${url.search}`);
     } catch {}
-  };
-
-  const addToCart = (name: string) => {
-    setCart((prev) => ({ ...prev, [name]: (prev[name] ?? 0) + 1 }));
-  };
-  const decFromCart = (name: string) => {
-    setCart((prev) => {
-      const next = { ...prev };
-      const n = (next[name] ?? 0) - 1;
-      if (n <= 0) delete next[name];
-      else next[name] = n;
-      return next;
-    });
-  };
-
-  const placeOrder = async () => {
-    setStoreError(null);
-    if (cartEntries.length < 1) {
-      setStoreError("Add at least 1 item to your cart.");
-      return;
-    }
-    if (!checkoutName.trim()) {
-      setStoreError("Enter your name.");
-      return;
-    }
-    if (digitsOnly(checkoutPhone).length < 8) {
-      setStoreError("Enter a valid WhatsApp number.");
-      return;
-    }
-    if (!checkoutAddress.trim()) {
-      setStoreError("Enter your hostel / delivery address.");
-      return;
-    }
-
-    setPlacing(true);
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          slug: business.slug,
-          customerName: checkoutName.trim(),
-          customerPhone: digitsOnly(checkoutPhone),
-          deliveryAddress: checkoutAddress.trim(),
-          notes: checkoutNotes.trim() ? checkoutNotes.trim() : undefined,
-          items: cartEntries.map((it) => ({ name: it.name, qty: it.qty })),
-        }),
-      });
-      const data = (await res.json()) as { order?: { order_ref: string; total: number }; error?: string };
-      if (!res.ok) throw new Error(data.error || "Failed to place order.");
-      if (!data.order) throw new Error("Missing order response.");
-
-      const itemsText = cartEntries.map((it) => `${it.name} x${it.qty}`).join(", ");
-      const totalText = formatMoney(data.order.total, business.currency_symbol);
-      const message = fillWhatsAppTemplate(config.whatsappMessage, {
-        orderId: data.order.order_ref,
-        name: checkoutName.trim(),
-        items: itemsText,
-        total: totalText,
-        hostel: checkoutAddress.trim(),
-      });
-      const url = waLink(business.whatsapp, message);
-
-      setOrderSuccess({ orderRef: data.order.order_ref, total: data.order.total, waUrl: url });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong.";
-      setStoreError(message);
-    } finally {
-      setPlacing(false);
-    }
   };
 
   const verifyPin = async () => {
@@ -389,309 +328,165 @@ export default function StoreApp({ business }: { business: Business }) {
     } catch {}
   };
 
+  const storeTemplate = (
+    <div className="mx-auto w-full max-w-[1440px] px-0 py-0 sm:px-4 sm:py-4 lg:px-6 lg:py-6">
+      <div className="overflow-hidden bg-white lg:rounded-[32px] lg:border lg:border-[var(--kk-border)] lg:shadow-[0_20px_60px_rgba(15,23,42,.08)]">
+        <TemplateComponent
+          storeName={storeName}
+          ownerName={business.owner_name}
+          category={business.category}
+          location={business.location}
+          whatsappNumber={whatsapp}
+          currencySymbol={business.currency_symbol}
+          tagline={business.tagline}
+          products={templateProducts}
+        />
+      </div>
+    </div>
+  );
+
+  const isStoreView = view === "store";
+
+  if (isStoreView) {
+    return <div className="min-h-screen" style={{ background: config.colorScheme.bg }}>{storeTemplate}</div>;
+  }
+
   return (
     <div className="min-h-full" style={{ background: config.colorScheme.bg }}>
-      <div
-        className="px-5 pt-10 pb-8"
-        style={{ background: config.colorScheme.primary, color: "white" }}
-      >
-        <div className="mx-auto max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-[12px] font-semibold">
-            {business.location}
-          </div>
-          <h1 className="mt-5 font-[var(--font-serif)] text-[40px] font-black leading-[1.05] tracking-[-0.02em]">
-            {business.business_name}
-          </h1>
-          <p className="mt-3 max-w-xl text-[16px] leading-7 text-white/90">
-            <span className="font-semibold">{config.headline}</span> — {config.heroCopy}
-          </p>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-3xl px-5 pb-32 pt-8">
-        {view === "store" ? (
+        {!ownerToken ? (
+          <section className="rounded-2xl border border-[var(--kk-border)] bg-white p-6">
+            <div className="font-[var(--font-serif)] text-[18px] font-bold">Owner Dashboard</div>
+            <div className="mt-2 text-[13px] text-[var(--kk-muted)]">Enter your PIN to unlock.</div>
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
+              <label className="flex flex-1 flex-col gap-2">
+                <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--kk-muted)]">
+                  PIN
+                </span>
+                <input
+                  className="rounded-xl border border-[var(--kk-border)] bg-white px-4 py-3 text-[15px] outline-none focus:ring-4 focus:ring-[color:color-mix(in_oklab,var(--kk-accent),transparent_88%)]"
+                  value={pin}
+                  onChange={(e) => setPin(digitsOnly(e.target.value).slice(0, 6))}
+                  placeholder="••••"
+                  type="password"
+                  inputMode="numeric"
+                />
+              </label>
+              <PrimaryButton onClick={verifyPin}>Unlock</PrimaryButton>
+            </div>
+            {dashError && (
+              <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-[14px] text-red-800">
+                {dashError}
+              </div>
+            )}
+          </section>
+        ) : (
           <>
             <section className="rounded-2xl border border-[var(--kk-border)] bg-white p-6">
-              <div className="font-[var(--font-serif)] text-[18px] font-bold">How it works</div>
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="font-[var(--font-serif)] text-[18px] font-bold">Share your link</div>
+                  <div className="mt-1 font-mono text-[13px] font-semibold text-[var(--kk-muted)]">
+                    {shareUrl}
+                  </div>
+                </div>
+                <GhostButton onClick={copyShareLink}>Copy Link</GhostButton>
+              </div>
+            </section>
+
+            <section className="mt-6 grid gap-3 sm:grid-cols-4">
+              <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
+                <div className="text-[12px] text-[var(--kk-muted)]">Total Orders</div>
+                <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">
+                  {dashboardStats.totalOrders}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
+                <div className="text-[12px] text-[var(--kk-muted)]">Revenue</div>
+                <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">
+                  {formatMoney(dashboardStats.revenue, business.currency_symbol)}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
+                <div className="text-[12px] text-[var(--kk-muted)]">Pending</div>
+                <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">{dashboardStats.pending}</div>
+              </div>
+              <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
+                <div className="text-[12px] text-[var(--kk-muted)]">Delivered</div>
+                <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">
+                  {dashboardStats.delivered}
+                </div>
+              </div>
+            </section>
+
+            <section className="mt-6 rounded-2xl border border-[var(--kk-border)] bg-white p-6">
+              <div className="font-[var(--font-serif)] text-[18px] font-bold">AI growth tips</div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                {config.howItWorks.map((s) => (
-                  <div key={s.step} className="rounded-2xl border border-[var(--kk-border)] bg-white p-4">
-                    <div className="text-[12px] font-semibold text-[var(--kk-muted)]">Step {s.step}</div>
-                    <div className="mt-1 font-semibold">{s.title}</div>
-                    <div className="mt-1 text-[13px] leading-6 text-[var(--kk-muted)]">{s.desc}</div>
+                {config.ownerInsights.map((t, idx) => (
+                  <div key={idx} className="rounded-2xl border border-[var(--kk-border)] bg-white p-4">
+                    <div className="text-[12px] font-semibold text-[var(--kk-muted)]">Tip</div>
+                    <div className="mt-1 text-[13px] leading-6">{t.value}</div>
                   </div>
                 ))}
               </div>
             </section>
 
             <section className="mt-6 rounded-2xl border border-[var(--kk-border)] bg-white p-6">
-              <div className="flex items-baseline justify-between gap-3">
-                <div className="font-[var(--font-serif)] text-[18px] font-bold">Menu</div>
-                <div className="text-[12px] text-[var(--kk-muted)]">{cartCount} item(s)</div>
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="font-[var(--font-serif)] text-[18px] font-bold">Orders</div>
+                <GhostButton
+                  onClick={() => {
+                    if (!ownerToken) return;
+                    loadOrders(ownerToken, business.id);
+                  }}
+                  disabled={loadingOrders}
+                >
+                  {loadingOrders ? "Loading…" : "Refresh"}
+                </GhostButton>
               </div>
 
-              <div className="mt-4 flex flex-col gap-3">
-                {menu.map((item) => {
-                  const qty = cart[item.name] ?? 0;
-                  return (
-                    <div
-                      key={item.name}
-                      className="flex items-center justify-between gap-4 rounded-2xl border border-[var(--kk-border)] bg-white px-4 py-4"
-                    >
-                      <div>
-                        <div className="font-semibold">{item.name}</div>
-                        <div className="mt-1 font-[var(--font-serif)] text-[16px] font-bold text-[var(--kk-ink)]">
-                          {formatMoney(item.price, business.currency_symbol)}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <GhostButton onClick={() => decFromCart(item.name)} disabled={qty <= 0}>
-                          –
-                        </GhostButton>
-                        <div className="w-8 text-center text-[14px] font-semibold">{qty}</div>
-                        <PrimaryButton onClick={() => addToCart(item.name)}>Add</PrimaryButton>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-
-            <section
-              id="checkout"
-              className="mt-6 rounded-2xl border border-[var(--kk-border)] bg-white p-6"
-            >
-              <div className="font-[var(--font-serif)] text-[18px] font-bold">Checkout</div>
-              <div className="mt-2 text-[13px] leading-6 text-[var(--kk-muted)]">{config.orderInstructions}</div>
-
-              {orderSuccess ? (
-                <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
-                  <div className="text-[12px] font-semibold text-emerald-900">Order placed</div>
-                  <div className="mt-1 font-[var(--font-serif)] text-[18px] font-bold text-emerald-900">
-                    {orderSuccess.orderRef}
-                  </div>
-                  <div className="mt-1 text-[13px] text-emerald-900/80">
-                    Total: {formatMoney(orderSuccess.total, business.currency_symbol)}
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-3">
-                    <a
-                      className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-5 py-3 font-semibold text-white"
-                      href={orderSuccess.waUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      Confirm Order on WhatsApp
-                    </a>
-                    <GhostButton
-                      onClick={() => {
-                        setOrderSuccess(null);
-                        setCart({});
-                        setCheckoutNotes("");
-                      }}
-                    >
-                      New order
-                    </GhostButton>
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                  <label className="flex flex-col gap-2">
-                    <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--kk-muted)]">
-                      Your Name
-                    </span>
-                    <input
-                      className="rounded-xl border border-[var(--kk-border)] bg-white px-4 py-3 text-[15px] outline-none focus:ring-4 focus:ring-[color:color-mix(in_oklab,var(--kk-accent),transparent_88%)]"
-                      value={checkoutName}
-                      onChange={(e) => setCheckoutName(e.target.value)}
-                      placeholder="e.g. Tola"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2">
-                    <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--kk-muted)]">
-                      WhatsApp Number
-                    </span>
-                    <input
-                      className="rounded-xl border border-[var(--kk-border)] bg-white px-4 py-3 text-[15px] outline-none focus:ring-4 focus:ring-[color:color-mix(in_oklab,var(--kk-accent),transparent_88%)]"
-                      value={checkoutPhone}
-                      onChange={(e) => setCheckoutPhone(digitsOnly(e.target.value))}
-                      placeholder="e.g. 2348012345678"
-                      inputMode="numeric"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2 sm:col-span-2">
-                    <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--kk-muted)]">
-                      Hostel / Delivery Address
-                    </span>
-                    <input
-                      className="rounded-xl border border-[var(--kk-border)] bg-white px-4 py-3 text-[15px] outline-none focus:ring-4 focus:ring-[color:color-mix(in_oklab,var(--kk-accent),transparent_88%)]"
-                      value={checkoutAddress}
-                      onChange={(e) => setCheckoutAddress(e.target.value)}
-                      placeholder="e.g. Awolowo Hall, Block B"
-                    />
-                  </label>
-                  <label className="flex flex-col gap-2 sm:col-span-2">
-                    <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--kk-muted)]">
-                      Notes (optional)
-                    </span>
-                    <textarea
-                      className="min-h-[90px] rounded-xl border border-[var(--kk-border)] bg-white px-4 py-3 text-[15px] outline-none focus:ring-4 focus:ring-[color:color-mix(in_oklab,var(--kk-accent),transparent_88%)]"
-                      value={checkoutNotes}
-                      onChange={(e) => setCheckoutNotes(e.target.value)}
-                      placeholder="Any extra instructions?"
-                    />
-                  </label>
-                  {storeError && (
-                    <div className="sm:col-span-2 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-[14px] text-red-800">
-                      {storeError}
-                    </div>
-                  )}
-                  <div className="sm:col-span-2 flex items-center justify-between gap-3">
-                    <PrimaryButton onClick={placeOrder} disabled={placing || cartEntries.length < 1}>
-                      {placing ? "Placing order…" : `Place order (${formatMoney(cartTotal, business.currency_symbol)})`}
-                    </PrimaryButton>
-                    <div className="text-[12px] text-[var(--kk-muted)]">No payment in v1</div>
-                  </div>
+              {dashError && (
+                <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-[14px] text-red-800">
+                  {dashError}
                 </div>
               )}
-            </section>
-          </>
-        ) : (
-          <>
-            {!ownerToken ? (
-              <section className="rounded-2xl border border-[var(--kk-border)] bg-white p-6">
-                <div className="font-[var(--font-serif)] text-[18px] font-bold">Owner Dashboard</div>
-                <div className="mt-2 text-[13px] text-[var(--kk-muted)]">Enter your PIN to unlock.</div>
-                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end">
-                  <label className="flex flex-1 flex-col gap-2">
-                    <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[var(--kk-muted)]">
-                      PIN
-                    </span>
-                    <input
-                      className="rounded-xl border border-[var(--kk-border)] bg-white px-4 py-3 text-[15px] outline-none focus:ring-4 focus:ring-[color:color-mix(in_oklab,var(--kk-accent),transparent_88%)]"
-                      value={pin}
-                      onChange={(e) => setPin(digitsOnly(e.target.value).slice(0, 6))}
-                      placeholder="••••"
-                      type="password"
-                      inputMode="numeric"
-                    />
-                  </label>
-                  <PrimaryButton onClick={verifyPin}>Unlock</PrimaryButton>
-                </div>
-                {dashError && (
-                  <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-[14px] text-red-800">
-                    {dashError}
-                  </div>
-                )}
-              </section>
-            ) : (
-              <>
-                <section className="rounded-2xl border border-[var(--kk-border)] bg-white p-6">
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <div className="font-[var(--font-serif)] text-[18px] font-bold">Share your link</div>
-                      <div className="mt-1 font-mono text-[13px] font-semibold text-[var(--kk-muted)]">
-                        {shareUrl}
-                      </div>
-                    </div>
-                    <GhostButton onClick={copyShareLink}>Copy Link</GhostButton>
-                  </div>
-                </section>
 
-                <section className="mt-6 grid gap-3 sm:grid-cols-4">
-                  <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
-                    <div className="text-[12px] text-[var(--kk-muted)]">Total Orders</div>
-                    <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">
-                      {dashboardStats.totalOrders}
-                    </div>
+              <div className="mt-5 flex flex-col gap-3">
+                {orders.length === 0 ? (
+                  <div className="rounded-2xl border border-[var(--kk-border)] bg-white px-5 py-6 text-[13px] text-[var(--kk-muted)]">
+                    No orders yet.
                   </div>
-                  <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
-                    <div className="text-[12px] text-[var(--kk-muted)]">Revenue</div>
-                    <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">
-                      {formatMoney(dashboardStats.revenue, business.currency_symbol)}
-                    </div>
-                  </div>
-                  <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
-                    <div className="text-[12px] text-[var(--kk-muted)]">Pending</div>
-                    <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">{dashboardStats.pending}</div>
-                  </div>
-                  <div className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
-                    <div className="text-[12px] text-[var(--kk-muted)]">Delivered</div>
-                    <div className="mt-1 font-[var(--font-serif)] text-[22px] font-black">
-                      {dashboardStats.delivered}
-                    </div>
-                  </div>
-                </section>
-
-                <section className="mt-6 rounded-2xl border border-[var(--kk-border)] bg-white p-6">
-                  <div className="font-[var(--font-serif)] text-[18px] font-bold">AI growth tips</div>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                    {config.ownerInsights.map((t, idx) => (
-                      <div key={idx} className="rounded-2xl border border-[var(--kk-border)] bg-white p-4">
-                        <div className="text-[12px] font-semibold text-[var(--kk-muted)]">Tip</div>
-                        <div className="mt-1 text-[13px] leading-6">{t.value}</div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
-
-                <section className="mt-6 rounded-2xl border border-[var(--kk-border)] bg-white p-6">
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="font-[var(--font-serif)] text-[18px] font-bold">Orders</div>
-                    <GhostButton
-                      onClick={() => {
-                        if (!ownerToken) return;
-                        loadOrders(ownerToken, business.id);
-                      }}
-                      disabled={loadingOrders}
-                    >
-                      {loadingOrders ? "Loading…" : "Refresh"}
-                    </GhostButton>
-                  </div>
-
-                  {dashError && (
-                    <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-[14px] text-red-800">
-                      {dashError}
-                    </div>
-                  )}
-
-                  <div className="mt-5 flex flex-col gap-3">
-                    {orders.length === 0 ? (
-                      <div className="rounded-2xl border border-[var(--kk-border)] bg-white px-5 py-6 text-[13px] text-[var(--kk-muted)]">
-                        No orders yet.
-                      </div>
-                    ) : (
-                      orders.map((o) => (
-                        <div key={o.id} className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
-                          <div className="flex flex-wrap items-start justify-between gap-3">
-                            <div>
-                              <div className="font-semibold">{o.order_ref}</div>
-                              <div className="mt-1 text-[13px] text-[var(--kk-muted)]">
-                                {o.customer_name} • {o.delivery_address}
-                              </div>
-                              <div className="mt-1 text-[13px] text-[var(--kk-muted)]">
-                                Total: {formatMoney(Number(o.total || 0), business.currency_symbol)}
-                              </div>
-                            </div>
-                            <StatusPill status={o.status} />
+                ) : (
+                  orders.map((o) => (
+                    <div key={o.id} className="rounded-2xl border border-[var(--kk-border)] bg-white p-5">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <div className="font-semibold">{o.order_ref}</div>
+                          <div className="mt-1 text-[13px] text-[var(--kk-muted)]">
+                            {o.customer_name} • {o.delivery_address}
                           </div>
-
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            <GhostButton onClick={() => updateStatus(o.id, "Shopping")}>Shopping</GhostButton>
-                            <GhostButton onClick={() => updateStatus(o.id, "Delivered")}>Delivered</GhostButton>
-                            <GhostButton onClick={() => updateStatus(o.id, "Cancelled")}>Cancel</GhostButton>
+                          <div className="mt-1 text-[13px] text-[var(--kk-muted)]">
+                            Total: {formatMoney(Number(o.total || 0), business.currency_symbol)}
                           </div>
                         </div>
-                      ))
-                    )}
-                  </div>
-                </section>
-              </>
-            )}
+                        <StatusPill status={o.status} />
+                      </div>
+
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        <GhostButton onClick={() => updateStatus(o.id, "Shopping")}>Shopping</GhostButton>
+                        <GhostButton onClick={() => updateStatus(o.id, "Delivered")}>Delivered</GhostButton>
+                        <GhostButton onClick={() => updateStatus(o.id, "Cancelled")}>Cancel</GhostButton>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </section>
           </>
         )}
       </div>
 
-      {view === "store" && cartEntries.length > 0 && !orderSuccess && (
+      {isStoreView && cartEntries.length > 0 && !orderSuccess && (
         <div className="fixed left-0 right-0 z-20" style={{ bottom: 70 }}>
           <div className="mx-auto max-w-3xl px-5">
             <div className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--kk-border)] bg-white px-5 py-4 shadow-[0_10px_30px_rgba(0,0,0,.08)]">
@@ -719,7 +514,7 @@ export default function StoreApp({ business }: { business: Business }) {
           <button
             type="button"
             onClick={() => setActiveView("store")}
-            className={`text-[13px] font-semibold ${view === "store" ? "text-[var(--kk-accent)]" : "text-[var(--kk-muted)]"}`}
+            className={`text-[13px] font-semibold ${isStoreView ? "text-[var(--kk-accent)]" : "text-[var(--kk-muted)]"}`}
           >
             Store
           </button>

@@ -1,0 +1,157 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{margin:0;background:#E5E5E5;}
+  .phone{width:375px;margin:0 auto;background:#fff;min-height:100vh;font-family:'Inter',sans-serif;color:#1a1a18;}
+
+  /* HEADER */
+  .header{padding:20px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #F0F0F0;}
+  .logo-row{display:flex;align-items:center;gap:10px;}
+  .avatar{width:36px;height:36px;border-radius:9px;background:#1a1a18;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;}
+  .store-name{font-size:15px;font-weight:600;color:#1a1a18;letter-spacing:-0.3px;}
+  .store-loc{font-size:11px;color:#B0B0B0;letter-spacing:0.2px;}
+  .chat-btn{height:34px;padding:0 14px;background:#F5F5F5;border:none;border-radius:8px;font-size:12px;font-weight:500;color:#1a1a18;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;}
+
+  /* HERO */
+  .hero{padding:28px 22px 20px;}
+  .open-row{display:flex;align-items:center;gap:6px;margin-bottom:14px;}
+  .open-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;}
+  .open-txt{font-size:11px;color:#888;letter-spacing:0.2px;}
+  .hero-h{font-size:30px;font-weight:300;letter-spacing:-1.5px;line-height:1.1;color:#1a1a18;margin-bottom:6px;}
+  .hero-h strong{font-weight:600;}
+  .hero-sub{font-size:13px;color:#888;line-height:1.6;}
+
+  /* SEARCH BAR */
+  .search{margin:0 22px 24px;height:42px;background:#F7F7F7;border-radius:10px;display:flex;align-items:center;padding:0 14px;gap:8px;}
+  .search-icon{font-size:14px;color:#CCC;}
+  .search-txt{font-size:13px;color:#CCC;}
+
+  /* PRODUCT GRID */
+  .grid-label{font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:#C0C0C0;padding:0 22px;margin-bottom:12px;}
+  .product-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 22px;margin-bottom:24px;}
+  .prod-card{background:#F9F9F9;border-radius:14px;padding:16px;position:relative;}
+  .prod-card-name{font-size:13px;font-weight:500;color:#1a1a18;letter-spacing:-0.2px;margin-bottom:3px;}
+  .prod-card-desc{font-size:11px;color:#B0B0B0;line-height:1.4;margin-bottom:12px;}
+  .prod-card-bottom{display:flex;align-items:center;justify-content:space-between;}
+  .prod-card-price{font-size:14px;font-weight:600;color:#1a1a18;letter-spacing:-0.4px;}
+  .prod-card-add{width:28px;height:28px;border-radius:7px;background:#1a1a18;border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;}
+  .prod-card.featured{background:#1a1a18;grid-column:span 2;}
+  .prod-card.featured .prod-card-name{color:#fff;font-size:15px;}
+  .prod-card.featured .prod-card-desc{color:rgba(255,255,255,0.4);}
+  .prod-card.featured .prod-card-price{color:#fff;font-size:18px;}
+  .prod-card.featured .prod-card-add{background:#fff;color:#1a1a18;}
+  .best-tag{display:inline-block;font-size:9px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#C84B2F;margin-bottom:8px;}
+
+  /* INFO ROW */
+  .info-row{display:flex;gap:8px;padding:0 22px;margin-bottom:24px;}
+  .info-chip{flex:1;background:#F7F7F7;border-radius:10px;padding:12px;text-align:center;}
+  .info-chip-val{font-size:13px;font-weight:600;color:#1a1a18;letter-spacing:-0.3px;}
+  .info-chip-label{font-size:10px;color:#C0C0C0;margin-top:2px;letter-spacing:0.2px;}
+
+  /* CTA */
+  .cta{margin:0 22px 32px;}
+  .cta-btn{width:100%;height:50px;background:#1a1a18;border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;letter-spacing:-0.2px;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .cta-sub{text-align:center;margin-top:10px;font-size:11px;color:#C0C0C0;}
+
+  .footer{padding:12px 22px 24px;display:flex;align-items:center;justify-content:center;gap:4px;border-top:1px solid #F5F5F5;}
+  .foot-txt{font-size:10px;color:#D0D0D0;}
+  .foot-link{font-size:10px;color:#C84B2F;opacity:0.5;}
+</style>
+
+<div class="phone">
+  <div class="header">
+    <div class="logo-row">
+      <div class="avatar">TK</div>
+      <div>
+        <div class="store-name">TechKart NG</div>
+        <div class="store-loc">Electronics · UNILAG</div>
+      </div>
+    </div>
+    <button class="chat-btn">💬 Chat</button>
+  </div>
+
+  <div class="hero">
+    <div class="open-row">
+      <div class="open-dot"></div>
+      <div class="open-txt">Open · Usually replies in minutes</div>
+    </div>
+    <h1 class="hero-h">Quality<br><strong>tech gear.</strong></h1>
+    <p class="hero-sub">Cables, accessories & gadgets at student-friendly prices.</p>
+  </div>
+
+  <div class="search">
+    <div class="search-icon">🔍</div>
+    <div class="search-txt">Search products...</div>
+  </div>
+
+  <div class="info-row">
+    <div class="info-chip">
+      <div class="info-chip-val">Same day</div>
+      <div class="info-chip-label">Delivery</div>
+    </div>
+    <div class="info-chip">
+      <div class="info-chip-val">Verified</div>
+      <div class="info-chip-label">Seller</div>
+    </div>
+    <div class="info-chip">
+      <div class="info-chip-val">12+</div>
+      <div class="info-chip-label">Products</div>
+    </div>
+  </div>
+
+  <div class="grid-label">Products</div>
+  <div class="product-grid">
+    <div class="prod-card featured">
+      <div class="best-tag">⚡ Best seller</div>
+      <div class="prod-card-name">Type-C Fast Charger</div>
+      <div class="prod-card-desc">65W · Works with any laptop or phone</div>
+      <div class="prod-card-bottom">
+        <div class="prod-card-price">₦3,500</div>
+        <button class="prod-card-add">+</button>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-card-name">AirPods clone</div>
+      <div class="prod-card-desc">Solid sound quality</div>
+      <div class="prod-card-bottom">
+        <div class="prod-card-price">₦5,000</div>
+        <button class="prod-card-add">+</button>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-card-name">Phone stand</div>
+      <div class="prod-card-desc">Adjustable, foldable</div>
+      <div class="prod-card-bottom">
+        <div class="prod-card-price">₦1,200</div>
+        <button class="prod-card-add">+</button>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-card-name">USB hub</div>
+      <div class="prod-card-desc">4-port, plug & play</div>
+      <div class="prod-card-bottom">
+        <div class="prod-card-price">₦2,800</div>
+        <button class="prod-card-add">+</button>
+      </div>
+    </div>
+    <div class="prod-card">
+      <div class="prod-card-name">Screen wipes</div>
+      <div class="prod-card-desc">Pack of 20</div>
+      <div class="prod-card-bottom">
+        <div class="prod-card-price">₦500</div>
+        <button class="prod-card-add">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <button class="cta-btn">💬 Order on WhatsApp</button>
+    <div class="cta-sub">Fast replies · Secure payment · Campus delivery</div>
+  </div>
+
+  <div class="footer">
+    <div class="foot-txt">Powered by&nbsp;</div>
+    <div class="foot-link">kioskk.me</div>
+  </div>
+</div>

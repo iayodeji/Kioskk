@@ -1,0 +1,129 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{margin:0;background:#E8E4DC;}
+  .phone{width:375px;margin:0 auto;background:#F5F0E8;min-height:100vh;font-family:'DM Sans',sans-serif;color:#1a1a18;}
+
+  .header{padding:20px 22px 16px;display:flex;align-items:flex-start;justify-content:space-between;}
+  .store-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#1a1a18;letter-spacing:-0.5px;line-height:1.1;}
+  .store-sub{font-size:10px;color:#A09880;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+  .open-badge{display:inline-flex;align-items:center;gap:5px;background:#1a1a18;color:#F5F0E8;font-size:10px;font-weight:500;padding:5px 10px;border-radius:100px;letter-spacing:0.3px;margin-top:4px;}
+  .open-dot{width:5px;height:5px;border-radius:50%;background:#4CAF50;}
+
+  /* HERO BANNER */
+  .hero-banner{margin:0 22px 20px;background:#1a1a18;border-radius:18px;padding:28px 24px;position:relative;overflow:hidden;}
+  .hero-banner::after{content:'✦';position:absolute;right:-10px;bottom:-20px;font-size:100px;color:rgba(200,75,47,0.08);line-height:1;}
+  .hero-eyebrow{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:10px;}
+  .hero-h{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#F5F0E8;line-height:1.15;letter-spacing:-0.5px;margin-bottom:8px;}
+  .hero-h em{font-style:italic;color:#C84B2F;}
+  .hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:rgba(255,255,255,0.4);}
+
+  /* FEATURED PRODUCT */
+  .section-label{font-size:9px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:#A09880;margin-bottom:12px;padding:0 22px;}
+  .featured-card{margin:0 22px 20px;background:#fff;border-radius:16px;padding:20px;border:0.5px solid rgba(0,0,0,0.06);}
+  .feat-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;}
+  .feat-badge{font-size:9px;font-weight:500;letter-spacing:1.2px;text-transform:uppercase;color:#C84B2F;background:rgba(200,75,47,0.08);padding:4px 9px;border-radius:100px;}
+  .feat-price-big{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:#1a1a18;}
+  .feat-name{font-size:18px;font-weight:600;color:#1a1a18;letter-spacing:-0.4px;margin-bottom:4px;}
+  .feat-desc{font-size:12px;color:#888780;line-height:1.6;margin-bottom:16px;}
+  .feat-btn{width:100%;height:44px;background:#1a1a18;border:none;border-radius:10px;color:#F5F0E8;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:-0.1px;}
+
+  /* PRODUCT LIST */
+  .product-row{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:0.5px solid rgba(0,0,0,0.06);}
+  .prod-left{}
+  .prod-name{font-size:14px;font-weight:500;color:#1a1a18;letter-spacing:-0.2px;}
+  .prod-desc{font-size:11px;color:#A09880;margin-top:2px;}
+  .prod-right{display:flex;align-items:center;gap:12px;}
+  .prod-price{font-size:15px;font-weight:600;color:#1a1a18;letter-spacing:-0.4px;}
+  .add-circle{width:30px;height:30px;border-radius:50%;background:#1a1a18;border:none;color:#F5F0E8;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;}
+
+  .divider{height:8px;background:rgba(0,0,0,0.04);margin:4px 0;}
+
+  /* CTA */
+  .cta-area{padding:20px 22px 32px;}
+  .cta-box{background:#C84B2F;border-radius:16px;padding:20px;}
+  .cta-t{font-family:'Playfair Display',serif;font-size:20px;font-weight:400;color:#fff;margin-bottom:4px;line-height:1.2;}
+  .cta-t em{font-style:italic;}
+  .cta-s{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:16px;line-height:1.5;}
+  .cta-btn{width:100%;height:44px;background:#fff;border:none;border-radius:10px;color:#C84B2F;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+
+  .footer{padding:12px 22px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .foot-l{font-size:10px;color:#C0BAB0;letter-spacing:0.3px;}
+  .foot-r{font-size:10px;color:#C84B2F;opacity:0.6;}
+</style>
+
+<div class="phone">
+  <div class="header">
+    <div>
+      <div class="store-name">Kemi's Closet</div>
+      <div class="store-sub">Fashion & Thrift · OAU</div>
+      <div class="open-badge"><div class="open-dot"></div>Open now</div>
+    </div>
+    <div style="font-size:22px;margin-top:4px;">💬</div>
+  </div>
+
+  <div class="hero-banner">
+    <div class="hero-eyebrow">✦ &nbsp;New arrivals weekly</div>
+    <h1 class="hero-h">Dress like<br>you <em>mean it.</em></h1>
+    <div class="hero-tag">Thrift · Vintage · Premium picks</div>
+  </div>
+
+  <div class="section-label">This week's pick</div>
+  <div class="featured-card">
+    <div class="feat-top">
+      <div class="feat-badge">🔥 Most wanted</div>
+      <div class="feat-price-big">₦4,500</div>
+    </div>
+    <div class="feat-name">Y2K Denim Jacket</div>
+    <div class="feat-desc">Vintage wash, oversized fit. Only 2 left. Ships same day within OAU.</div>
+    <button class="feat-btn">Order via WhatsApp</button>
+  </div>
+
+  <div class="section-label">All items</div>
+  <div class="product-row">
+    <div class="prod-left">
+      <div class="prod-name">Linen coord set</div>
+      <div class="prod-desc">Cream · S, M available</div>
+    </div>
+    <div class="prod-right">
+      <div class="prod-price">₦6,200</div>
+      <button class="add-circle">+</button>
+    </div>
+  </div>
+  <div class="product-row">
+    <div class="prod-left">
+      <div class="prod-name">Vintage tee bundle</div>
+      <div class="prod-desc">Any 3 for this price</div>
+    </div>
+    <div class="prod-right">
+      <div class="prod-price">₦3,500</div>
+      <button class="add-circle">+</button>
+    </div>
+  </div>
+  <div class="product-row">
+    <div class="prod-left">
+      <div class="prod-name">Cargo trousers</div>
+      <div class="prod-desc">Olive green · M, L, XL</div>
+    </div>
+    <div class="prod-right">
+      <div class="prod-price">₦5,800</div>
+      <button class="add-circle">+</button>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="cta-area">
+    <div class="cta-box">
+      <div class="cta-t">See something<br>you <em>love?</em></div>
+      <div class="cta-s">Send a message and we'll sort out delivery, sizing, and payment.</div>
+      <button class="cta-btn">💬 Chat on WhatsApp</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="foot-l">Powered by</div>
+    <div class="foot-r">kioskk.me</div>
+  </div>
+</div>

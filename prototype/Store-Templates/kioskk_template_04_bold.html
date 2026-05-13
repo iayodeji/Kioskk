@@ -1,0 +1,158 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Inter:wght@300;400;500&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{margin:0;background:#1a1a18;}
+  .phone{width:375px;margin:0 auto;background:#FAFAF8;min-height:100vh;font-family:'DM Sans',sans-serif;color:#1a1a18;overflow:hidden;}
+
+  /* HERO HEADER - Full bleed colour */
+  .hero-header{background:#C84B2F;padding:22px 22px 32px;position:relative;overflow:hidden;}
+  .hero-header::before{content:'';position:absolute;right:-30px;top:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.06);}
+  .hero-header::after{content:'';position:absolute;right:20px;bottom:-40px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.04);}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+  .store-id{display:flex;align-items:center;gap:10px;}
+  .avatar{width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;}
+  .store-name{font-size:14px;font-weight:600;color:#fff;letter-spacing:-0.2px;}
+  .store-cat{font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px;letter-spacing:0.3px;}
+  .chat-icon{width:36px;height:36px;background:rgba(255,255,255,0.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+  .hero-label{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px;}
+  .hero-h{font-size:36px;font-weight:700;color:#fff;line-height:1.0;letter-spacing:-1.5px;margin-bottom:6px;}
+  .hero-sub{font-size:13px;color:rgba(255,255,255,0.65);line-height:1.5;}
+
+  /* STATS STRIP */
+  .stats{display:flex;background:#1a1a18;padding:14px 22px;}
+  .stat{flex:1;text-align:center;}
+  .stat-n{font-size:15px;font-weight:700;color:#fff;letter-spacing:-0.5px;}
+  .stat-l{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.5px;margin-top:1px;}
+  .stat-div{width:0.5px;background:rgba(255,255,255,0.08);margin:0;}
+
+  /* FEATURED */
+  .section{padding:20px 22px 0;}
+  .sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .sec-t{font-size:13px;font-weight:600;color:#1a1a18;letter-spacing:-0.3px;}
+  .sec-link{font-size:11px;color:#C84B2F;font-weight:500;}
+
+  .feat-card{background:#1a1a18;border-radius:16px;padding:20px;margin-bottom:20px;position:relative;overflow:hidden;}
+  .feat-card::after{content:'★';position:absolute;right:-5px;bottom:-15px;font-size:80px;color:rgba(255,255,255,0.03);line-height:1;}
+  .feat-badge{display:inline-block;font-size:9px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:#C84B2F;background:rgba(200,75,47,0.12);padding:4px 9px;border-radius:100px;margin-bottom:10px;}
+  .feat-name{font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.6px;margin-bottom:4px;}
+  .feat-desc{font-size:12px;color:rgba(255,255,255,0.4);line-height:1.5;margin-bottom:16px;}
+  .feat-row{display:flex;align-items:center;justify-content:space-between;}
+  .feat-price{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.8px;}
+  .feat-btn{height:38px;padding:0 20px;background:#C84B2F;border:none;border-radius:9px;color:#fff;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;}
+
+  /* LIST */
+  .prod-list{padding:0 22px;}
+  .prod-item{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #F0EEE8;}
+  .prod-item:last-child{border:none;}
+  .prod-num{font-size:11px;font-weight:600;color:#D0CCC4;width:22px;flex-shrink:0;}
+  .prod-info{flex:1;margin:0 10px;}
+  .prod-name{font-size:14px;font-weight:600;color:#1a1a18;letter-spacing:-0.3px;}
+  .prod-tag{font-size:10px;color:#B0ABA0;margin-top:1px;}
+  .prod-right{display:flex;align-items:center;gap:10px;}
+  .prod-price{font-size:14px;font-weight:700;color:#1a1a18;letter-spacing:-0.4px;}
+  .add-sq{width:30px;height:30px;background:#C84B2F;border:none;border-radius:7px;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;font-weight:300;}
+
+  /* CTA */
+  .cta{padding:20px 22px 32px;}
+  .cta-btn{width:100%;height:52px;background:#C84B2F;border:none;border-radius:13px;color:#fff;font-size:15px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;letter-spacing:-0.3px;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .cta-sub{text-align:center;margin-top:10px;font-size:11px;color:#B0ABA0;letter-spacing:0.2px;}
+
+  .footer{padding:8px 22px 20px;display:flex;justify-content:center;gap:4px;}
+  .foot-t{font-size:10px;color:#D0CCC4;}
+  .foot-l{font-size:10px;color:rgba(200,75,47,0.5);}
+</style>
+
+<div class="phone">
+  <div class="hero-header">
+    <div class="nav-row">
+      <div class="store-id">
+        <div class="avatar">SB</div>
+        <div>
+          <div class="store-name">Seun's Beauty</div>
+          <div class="store-cat">SKINCARE · LASU</div>
+        </div>
+      </div>
+      <div class="chat-icon">💬</div>
+    </div>
+    <div class="hero-label">✦ &nbsp;Premium skincare</div>
+    <h1 class="hero-h">Glow<br>different.</h1>
+    <p class="hero-sub">Curated skincare that actually works for melanin-rich skin.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">200+</div><div class="stat-l">Customers</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">Same day</div><div class="stat-l">Delivery</div></div>
+    <div class="stat-div"></div>
+    <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Legit</div></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-t">This week's special</div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-badge">🔥 Top seller</div>
+      <div class="feat-name">Kojic acid soap bundle</div>
+      <div class="feat-desc">3 bars · Fade dark spots in 2 weeks. Campus bestseller.</div>
+      <div class="feat-row">
+        <div class="feat-price">₦3,800</div>
+        <button class="feat-btn">Order now</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-header">
+      <div class="sec-t">All products</div>
+      <div class="sec-link">See all</div>
+    </div>
+  </div>
+
+  <div class="prod-list">
+    <div class="prod-item">
+      <div class="prod-num">01</div>
+      <div class="prod-info">
+        <div class="prod-name">Vitamin C serum</div>
+        <div class="prod-tag">30ml · Brightening</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-price">₦4,500</div>
+        <button class="add-sq">+</button>
+      </div>
+    </div>
+    <div class="prod-item">
+      <div class="prod-num">02</div>
+      <div class="prod-info">
+        <div class="prod-name">Shea butter cream</div>
+        <div class="prod-tag">250ml · Moisturising</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-price">₦2,200</div>
+        <button class="add-sq">+</button>
+      </div>
+    </div>
+    <div class="prod-item">
+      <div class="prod-num">03</div>
+      <div class="prod-info">
+        <div class="prod-name">Sunscreen SPF50</div>
+        <div class="prod-tag">No white cast</div>
+      </div>
+      <div class="prod-right">
+        <div class="prod-price">₦3,000</div>
+        <button class="add-sq">+</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta">
+    <button class="cta-btn">💬 Order on WhatsApp</button>
+    <div class="cta-sub">Fast delivery · Trusted by 200+ customers</div>
+  </div>
+
+  <div class="footer">
+    <div class="foot-t">Powered by&nbsp;</div>
+    <div class="foot-l">kioskk.me</div>
+  </div>
+</div>

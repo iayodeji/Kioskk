@@ -1,7 +1,5 @@
 import "server-only";
 
-import { getServerEnv } from "@/lib/env";
-import { extractFirstJsonObject } from "@/lib/ai/parse";
 import { aiConfigSchema, type AiConfig } from "@/lib/ai/schema";
 
 type GenerateInput = {
@@ -14,77 +12,37 @@ type GenerateInput = {
 };
 
 export async function generateAiConfig(input: GenerateInput): Promise<AiConfig> {
-  const { anthropicApiKey } = getServerEnv();
+  const pickColors = (category: string) => {
+    if (/food|snack|grocery/i.test(category)) return { primary: "#D97706", bg: "#FFF7ED" };
+    if (/beauty|skincare/i.test(category)) return { primary: "#BE185D", bg: "#FFF1F2" };
+    if (/fashion|clothing/i.test(category)) return { primary: "#1E3A8A", bg: "#EEF2FF" };
+    if (/electronics/i.test(category)) return { primary: "#065F46", bg: "#ECFDF5" };
+    if (/laundry|cleaning/i.test(category)) return { primary: "#0F766E", bg: "#F0FDFA" };
+    return { primary: "#0F172A", bg: "#FFFFFF" };
+  };
 
-  const prompt = `Generate a micro-business storefront config. Return ONLY raw JSON, zero markdown, no backticks, no preamble.
+  const colors = pickColors(input.category || "");
+  const config = {
+    headline: `${input.businessName} — Open for orders`,
+    heroCopy: `Order from ${input.businessName} for quick delivery on campus.`,
+    colorScheme: { primary: colors.primary, bg: colors.bg },
+    howItWorks: [
+      { step: "1", title: "Browse", desc: "Pick items you want from the menu." },
+      { step: "2", title: "Order", desc: "Send an order through WhatsApp or the form." },
+      { step: "3", title: "Receive", desc: "Confirm the order and get it delivered." },
+    ],
+    orderInstructions: "After placing an order, you will receive a confirmation via WhatsApp.",
+    whatsappMessage: `Hi ${input.ownerName}! I placed an order on ${input.businessName}. Order ID: {{orderId}}\nMy name: {{name}}\nItems: {{items}}\nTotal: {{total}}\nDelivery to: {{hostel}}`,
+    ownerInsights: [
+      { label: "tip", value: "Highlight your bestsellers at the top." },
+      { label: "tip", value: "Offer a single discounted combo to increase order size." },
+      { label: "tip", value: "Respond quickly on WhatsApp to confirm orders." },
+    ],
+  };
 
-Business: ${input.businessName}
-Owner: ${input.ownerName}
-Category: ${input.category}
-Location: ${input.location}
-Currency symbol: ${input.currencySymbol}
-Products: ${JSON.stringify(input.items)}
-
-JSON schema:
-{
-  "headline": "4-6 word tagline",
-  "heroCopy": "2 compelling customer-facing sentences",
-  "colorScheme": {"primary":"#hex","bg":"#hex"},
-  "howItWorks": [
-    {"step":"1","title":"Browse","desc":"one sentence"},
-    {"step":"2","title":"Order","desc":"one sentence"},
-    {"step":"3","title":"Receive","desc":"one sentence"}
-  ],
-  "orderInstructions": "1-2 sentences: what happens after order",
-  "whatsappMessage": "Hi ${input.ownerName}! I just placed an order on ${input.businessName}.\\n\\nOrder ID: {{orderId}}\\nMy name: {{name}}\\nItems: {{items}}\\nTotal: {{total}}\\nDelivery to: {{hostel}}\\n\\nPlease confirm, thank you!",
-  "ownerInsights": [
-    {"label":"tip","value":"actionable growth tip"},
-    {"label":"tip","value":"actionable growth tip"},
-    {"label":"tip","value":"actionable growth tip"}
-  ]
-}
-
-Color scheme logic: food=warm amber, beauty=blush/rose, groceries=fresh green, fashion=deep navy. Use category to infer.`;
-
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-api-key": anthropicApiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1200,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-
-  const data: unknown = await res.json();
-  if (!res.ok) {
-    const message =
-      typeof data === "object" && data && "error" in data
-        ? JSON.stringify((data as { error: unknown }).error)
-        : `Claude API error (${res.status})`;
-    throw new Error(message);
-  }
-
-  const text =
-    typeof data === "object" &&
-    data &&
-    "content" in data &&
-    Array.isArray((data as { content?: unknown }).content) &&
-    (data as { content: Array<{ text?: unknown }> }).content[0] &&
-    typeof (data as { content: Array<{ text?: unknown }> }).content[0].text === "string"
-      ? (data as { content: Array<{ text: string }> }).content[0].text
-      : null;
-
-  if (!text) throw new Error("Claude returned an unexpected response.");
-
-  const raw = extractFirstJsonObject(text);
-  const parsed = aiConfigSchema.safeParse(JSON.parse(raw));
+  const parsed = aiConfigSchema.safeParse(config);
   if (!parsed.success) {
-    throw new Error("Claude returned invalid JSON config.");
+    throw new Error("Template config is invalid.");
   }
   return parsed.data;
 }
