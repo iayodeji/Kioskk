@@ -1,198 +1,491 @@
-import Link from "next/link";
+"use client";
+
 import Image from "next/image";
+import { FormEvent, useState } from "react";
 
 export default function Home() {
-  const stats = [
-    { number: "60s", label: "to go live" },
-    { number: "0 apps", label: "to download" },
-    { number: "₦0", label: "to start" },
-    { number: "1 link", label: "shares everything" },
-  ];
-  const testimonials = [
-    {
-      name: "Amara O.",
-      business: "Food vendor · UI campus",
-      text: "I used to wake up to 30 unread messages. Now I wake up to orders. Big difference.",
-    },
-    {
-      name: "Seun A.",
-      business: "Accessories · UNILAG",
-      text: "My customers take me more seriously now. I have an actual store, not just a WhatsApp number.",
-    },
-    {
-      name: "Kemi B.",
-      business: "Thrift & fashion · OAU",
-      text: "Set it up in the library between classes. By evening I had my first order through the link.",
-    },
-  ];
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    if (!email.trim()) return;
+
+    // Connect this to your waitlist backend/API.
+    console.log("Waitlist signup:", email);
+
+    setSubmitted(true);
+    setEmail("");
+  }
 
   return (
-    <>
-      <div className="r">
-        <nav className="nav">
-          <div className="logo">
-            <Image className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" width={40} height={40} />
-          </div>
-          <Link className="nav-cta" href="/create">Create your store →</Link>
-        </nav>
+    <main className="site">
 
-        <div className="hero">
-          <div className="eyebrow"><div className="eline" />Built for vendors<div className="eline" /></div>
-          <h1 className="h1">
-            Stop managing your<br />
-            business <em>by hand.</em><br />
-            <strong>Your store. In 60 seconds.</strong>
-          </h1>
-          <p className="hero-sub">
-            You have <strong>products to sell.</strong> Not messages to reply, orders to track, or catalogues to type out every morning. Kioskk handles all of it.
+      {/* NAV */}
+      <nav className="nav">
+        <a href="/" className="brand" aria-label="Kioskk home">
+          <Image
+            src="/kioskk-logo.svg"
+            alt="Kioskk"
+            width={34}
+            height={34}
+            priority
+          />
+          <span>kioskk</span>
+        </a>
+
+        <a href="#waitlist" className="nav-link">
+          Join waitlist <span>↗</span>
+        </a>
+      </nav>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-kicker">
+          <span className="dot" />
+          BUSINESS INFRASTRUCTURE FOR MODERN VENDORS
+        </div>
+
+        <h1>
+          Your business.
+          <br />
+          <em>Finally in one place.</em>
+        </h1>
+
+        <p className="hero-copy">
+          Your customers are on WhatsApp, Instagram, TikTok and everywhere
+          else. Kioskk brings your storefront, orders, payments, customers
+          and business together.
+        </p>
+
+        <form className="waitlist-form" onSubmit={handleSubmit}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+            aria-label="Email address"
+            required
+          />
+
+          <button type="submit">
+            {submitted ? "You're on the list" : "Join the waitlist"}
+            {!submitted && <span>↗</span>}
+          </button>
+        </form>
+
+        <p className="form-note">
+          Built for vendors who have outgrown the WhatsApp DM.
+        </p>
+
+        {/* PRODUCT SIGNAL */}
+        <div className="hero-product">
+          <div className="fake-window">
+            <div className="window-top">
+              <span>kioskk.me/your-business</span>
+              <span>●</span>
+            </div>
+
+            <div className="store-preview">
+              <div className="preview-sidebar">
+                <div className="mini-logo">K</div>
+
+                <div className="sidebar-line active" />
+                <div className="sidebar-line" />
+                <div className="sidebar-line" />
+                <div className="sidebar-line" />
+              </div>
+
+              <div className="preview-main">
+                <div className="preview-heading">
+                  <div>
+                    <small>GOOD FOOD, NO STRESS.</small>
+                    <h3>Amara's Kitchen</h3>
+                  </div>
+
+                  <div className="preview-status">
+                    ● Open
+                  </div>
+                </div>
+
+                <div className="product-row">
+                  <Product name="Jollof + Chicken" price="₦3,500" />
+                  <Product name="Chicken Pasta" price="₦3,000" />
+                  <Product name="Small Chops" price="₦2,500" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="floating-note note-one">
+            <span>ORDERS</span>
+            <strong>24 today</strong>
+          </div>
+
+          <div className="floating-note note-two">
+            <span>REVENUE</span>
+            <strong>₦86,400</strong>
+          </div>
+        </div>
+      </section>
+
+      {/* PROBLEM */}
+      <section className="statement-section">
+        <div className="section-index">01</div>
+
+        <div>
+          <p className="section-eyebrow">THE PROBLEM</p>
+
+          <h2>
+            Your business isn't
+            <br />
+            <em>just your WhatsApp.</em>
+          </h2>
+
+          <p className="section-copy">
+            But somehow, that's where everything ends up.
           </p>
-          <div className="hero-btns">
-            <Link className="btn-primary" href="/create">Build my store free <i className="ti ti-arrow-right" aria-hidden="true" /></Link>
-            <a className="btn-ghost" href="#how-it-works">See how it works</a>
+
+          <div className="chaos">
+            <span>WhatsApp</span>
+            <span>Instagram</span>
+            <span>Bank app</span>
+            <span>Payment screenshots</span>
+            <span>Notes</span>
+            <span>Google Sheets</span>
+            <span>DMs</span>
+            <span>“Have you paid?”</span>
           </div>
         </div>
+      </section>
 
-        <div className="stats-wrap">
-          <div className="stats-marquee">
-            <div className="stats-track">
-              <div className="stat-row">
-                {stats.map((item, index) => (
-                  <div className="stat-unit" key={`primary-${item.number}`}>
-                    <div className="stat">
-                      <div className="stat-n">{item.number}</div>
-                      <div className="stat-l">{item.label}</div>
-                    </div>
-                    {index < stats.length - 1 ? <div className="stat-div" /> : null}
-                  </div>
-                ))}
-              </div>
+      {/* SOLUTION */}
+      <section className="solution-section">
+        <div className="section-index">02</div>
 
-              <div className="stat-row stat-row--dup" aria-hidden="true">
-                {stats.map((item, index) => (
-                  <div className="stat-unit" key={`copy-${item.number}`}>
-                    <div className="stat">
-                      <div className="stat-n">{item.number}</div>
-                      <div className="stat-l">{item.label}</div>
-                    </div>
-                    {index < stats.length - 1 ? <div className="stat-div" /> : null}
-                  </div>
-                ))}
-              </div>
-            </div>
+        <div className="solution-content">
+          <p className="section-eyebrow">KIOSKK</p>
+
+          <h2>
+            One place for
+            <br />
+            <em>the whole business.</em>
+          </h2>
+
+          <p className="section-copy">
+            Create a storefront that actually feels like your brand.
+            Take orders. Get paid. Keep track of customers. Understand your
+            sales. Run campaigns. All without rebuilding the way you already
+            sell.
+          </p>
+
+          <div className="system-grid">
+            <SystemItem
+              number="01"
+              title="Storefront"
+              text="A proper home for your business. Custom, mobile-first and yours."
+            />
+
+            <SystemItem
+              number="02"
+              title="Commerce"
+              text="Orders, payments, invoices and inventory without the manual work."
+            />
+
+            <SystemItem
+              number="03"
+              title="Channels"
+              text="WhatsApp, Instagram, Kioskk and everywhere your customers find you."
+            />
+
+            <SystemItem
+              number="04"
+              title="Intelligence"
+              text="Know what sells, where customers come from and what to do next."
+            />
           </div>
         </div>
+      </section>
 
-        <div className="pain">
-          <div className="pain-label">The problem</div>
-          <p className="pain-quote">I spent more time taking orders on WhatsApp than actually running my business.</p>
-          <p className="pain-attr">— Every campus vendor, ever.</p>
-        </div>
+      {/* CHANNELS */}
+      <section className="channels-section">
+        <div className="section-index">03</div>
 
-        <div className="features">
-          <div className="section-head">
-            <div className="section-label">What kioskk does</div>
-            <h2 className="section-h2">Everything your business needs.<br /><strong>Nothing you don&#39;t.</strong></h2>
-          </div>
-          <div className="feat-grid">
-            <div className="feat-cell">
-              <div className="feat-icon"><i className="ti ti-layout-list" style={{ fontSize: 18 }} aria-hidden="true" /></div>
-              <div className="feat-title">Your catalogue, online</div>
-              <div className="feat-body">One link. Every product, price, and description — always up to date. Share it once, everywhere.</div>
-              <span className="feat-pill">No more typing lists</span>
-            </div>
-            <div className="feat-cell">
-              <div className="feat-icon"><i className="ti ti-device-mobile-message" style={{ fontSize: 18 }} aria-hidden="true" /></div>
-              <div className="feat-title">Orders without the back-and-forth</div>
-              <div className="feat-body">Customers order directly from your storefront. You get notified. No 47-message WhatsApp thread required.</div>
-              <span className="feat-pill">Auto order management</span>
-            </div>
-            <div className="feat-cell">
-              <div className="feat-icon"><i className="ti ti-file-invoice" style={{ fontSize: 18 }} aria-hidden="true" /></div>
-              <div className="feat-title">Invoices, automatically</div>
-              <div className="feat-body">Every order generates a clean invoice. Your customers look professional. So do you.</div>
-              <span className="feat-pill">Instant invoicing</span>
-            </div>
-            <div className="feat-cell">
-              <div className="feat-icon"><i className="ti ti-chart-bar" style={{ fontSize: 18 }} aria-hidden="true" /></div>
-              <div className="feat-title">Know your numbers</div>
-              <div className="feat-body">Sales dashboard in your pocket. See what&#39;s selling, what isn&#39;t, and what to do next.</div>
-              <span className="feat-pill">Business dashboard</span>
-            </div>
-          </div>
-        </div>
+        <div>
+          <p className="section-eyebrow">SELL WHERE YOU ALREADY SELL</p>
 
-        <div className="how" id="how-it-works">
-          <div className="section-head">
-            <div className="section-label">How it works</div>
-            <h2 className="section-h2">Three steps.<br /><strong>Then you are open for business.</strong></h2>
-          </div>
-          <div className="steps">
-            <div className="step">
-              <div className="step-num">01</div>
-              <div className="step-content">
-                <div className="step-t">Tell us about your business</div>
-                <div className="step-d">Name, category, what you sell, your WhatsApp — takes under a minute. No account needed.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-num">02</div>
-              <div className="step-content">
-                <div className="step-t">AI builds your storefront</div>
-                <div className="step-d">In about 15 seconds, a fully designed store is generated at kioskk.me/your-name. Logo, catalogue, order flow — all of it.</div>
-              </div>
-            </div>
-            <div className="step">
-              <div className="step-num">03</div>
-              <div className="step-content">
-                <div className="step-t">Share your link. Start selling.</div>
-                <div className="step-d">Drop it in your WhatsApp bio, Instagram, or just send it to your first customer. You are a real business now.</div>
-              </div>
-            </div>
-          </div>
-        </div>
+          <h2>
+            Your customers
+            <br />
+            <em>don't need to change.</em>
+          </h2>
 
-        <div className="proof">
-          <div className="section-head">
-            <div className="section-label">Real vendors. Real results.</div>
-          </div>
-          <div className="proof-track">
-            <div className="proof-grid">
-              {testimonials.map((item) => (
-                <div className="proof-card" key={`primary-${item.name}`}>
-                  <div className="proof-name">{item.name}</div>
-                  <div className="proof-biz">{item.business}</div>
-                  <div className="proof-text">{item.text}</div>
-                </div>
-              ))}
+          <p className="section-copy">
+            Kioskk fits underneath the channels you already use instead of
+            forcing you to abandon them.
+          </p>
+
+          <div className="channel-board">
+            <div className="channel">
+              <span>WA</span>
+              <strong>WhatsApp</strong>
+              <small>Orders & conversations</small>
             </div>
 
-            <div className="proof-grid proof-grid--dup" aria-hidden="true">
-              {testimonials.map((item) => (
-                <div className="proof-card" key={`copy-${item.name}`}>
-                  <div className="proof-name">{item.name}</div>
-                  <div className="proof-biz">{item.business}</div>
-                  <div className="proof-text">{item.text}</div>
-                </div>
-              ))}
+            <div className="channel">
+              <span>IG</span>
+              <strong>Instagram</strong>
+              <small>Discovery & social sales</small>
+            </div>
+
+            <div className="channel">
+              <span>TK</span>
+              <strong>TikTok</strong>
+              <small>Discovery</small>
+            </div>
+
+            <div className="channel">
+              <span>K</span>
+              <strong>Kioskk</strong>
+              <small>Store & checkout</small>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="cta-section">
-          <div className="cta-box">
-            <p className="cta-line"><strong>Launch your store in 60 seconds.</strong> One clean link for products, orders, and invoices.</p>
-            <Link className="cta-btn" href="/create">Build my store <i className="ti ti-arrow-right" style={{ fontSize: 15 }} aria-hidden="true" /></Link>
+      {/* INTELLIGENCE */}
+      <section className="intelligence-section">
+        <div className="section-index">04</div>
+
+        <div className="intelligence-content">
+          <p className="section-eyebrow">BUSINESS INTELLIGENCE</p>
+
+          <h2>
+            Don't just make
+            <br />
+            <em>money. Understand it.</em>
+          </h2>
+
+          <p className="section-copy">
+            Kioskk turns your everyday business activity into information
+            you can actually use.
+          </p>
+
+          <div className="insight-stack">
+            <Insight
+              label="CHANNEL"
+              text="Instagram brought 43% of your new customers this week."
+            />
+
+            <Insight
+              label="PRODUCT"
+              text="Your black tees are selling 2× faster than last week."
+            />
+
+            <Insight
+              label="CUSTOMERS"
+              text="8 customers haven't ordered in 14 days. Want to reach them?"
+            />
+
+            <Insight
+              label="TIMING"
+              text="Thursday evenings are your strongest ordering period."
+            />
           </div>
         </div>
+      </section>
 
-        <footer className="footer">
-          <div className="logo">
-            <Image className="brand-logo" src="/kioskk-logo.svg" alt="kioskk.me" width={40} height={40} />
+      {/* AI */}
+      <section className="ai-section">
+        <div className="ai-card">
+          <div className="ai-label">
+            <span className="dot" />
+            KIOSKK AI
           </div>
-          <div className="foot-tag">© 2026 kioskk.me</div>
-          <div className="foot-txt">Built for Africa&#39;s next million vendors.</div>
-        </footer>
+
+          <h2>
+            Your business can
+            <br />
+            <em>talk back.</em>
+          </h2>
+
+          <p>
+            Ask what's happening, what is selling, or what you should do next.
+            Kioskk turns your business data into answers.
+          </p>
+
+          <div className="chat-demo">
+            <div className="chat-user">
+              How did I do this week?
+            </div>
+
+            <div className="chat-ai">
+              Revenue is up <strong>18%</strong>. Instagram brought the most
+              new customers, but WhatsApp has your highest repeat-purchase
+              rate.
+            </div>
+
+            <div className="chat-user">
+              What should I push tomorrow?
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BUYER */}
+      <section className="buyer-section">
+        <div className="section-index">05</div>
+
+        <div>
+          <p className="section-eyebrow">AND THEN THERE'S THE OTHER SIDE</p>
+
+          <h2>
+            Tell Kioskk what
+            <br />
+            <em>you want.</em>
+          </h2>
+
+          <p className="section-copy">
+            “I need a plain black polo under ₦10k around UI.”
+          </p>
+
+          <div className="buyer-flow">
+            <div>UNDERSTAND</div>
+            <span>→</span>
+            <div>FIND</div>
+            <span>→</span>
+            <div>COMPARE</div>
+            <span>→</span>
+            <div>BUY</div>
+          </div>
+
+          <p className="buyer-note">
+            A more intelligent way to discover and buy from the businesses
+            around you — without turning Kioskk into another generic
+            marketplace.
+          </p>
+        </div>
+      </section>
+
+      {/* WAITLIST */}
+      <section className="final-cta" id="waitlist">
+        <div className="final-mark">K</div>
+
+        <p className="section-eyebrow">KIOSKK 2026</p>
+
+        <h2>
+          We're building the
+          <br />
+          <em>business layer.</em>
+        </h2>
+
+        <p>
+          For the vendors already selling every day.
+          <br />
+          For the businesses that have outgrown the DM.
+        </p>
+
+        <form className="waitlist-form final-form" onSubmit={handleSubmit}>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Your email"
+            aria-label="Email address"
+            required
+          />
+
+          <button type="submit">
+            {submitted ? "You're on the list" : "Join the waitlist"}
+            {!submitted && <span>↗</span>}
+          </button>
+        </form>
+
+        <small>
+          Early access. Product updates. No spam.
+        </small>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <a href="/" className="brand">
+          <Image
+            src="/kioskk-logo.svg"
+            alt="Kioskk"
+            width={30}
+            height={30}
+          />
+          <span>kioskk</span>
+        </a>
+
+        <span>© 2026 kioskk.me</span>
+
+        <span>Built for businesses that are already moving.</span>
+      </footer>
+    </main>
+  );
+}
+
+
+/* ------------------------------------------------ */
+/* Small presentation components                    */
+/* ------------------------------------------------ */
+
+function Product({
+  name,
+  price,
+}: {
+  name: string;
+  price: string;
+}) {
+  return (
+    <div className="product">
+      <div className="product-image" />
+
+      <div className="product-info">
+        <strong>{name}</strong>
+        <span>{price}</span>
       </div>
-    </>
+    </div>
+  );
+}
+
+
+function SystemItem({
+  number,
+  title,
+  text,
+}: {
+  number: string;
+  title: string;
+  text: string;
+}) {
+  return (
+    <div className="system-item">
+      <span>{number}</span>
+
+      <div>
+        <h3>{title}</h3>
+        <p>{text}</p>
+      </div>
+    </div>
+  );
+}
+
+
+function Insight({
+  label,
+  text,
+}: {
+  label: string;
+  text: string;
+}) {
+  return (
+    <div className="insight">
+      <span>{label}</span>
+      <p>{text}</p>
+      <b>↗</b>
+    </div>
   );
 }
